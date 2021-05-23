@@ -1,0 +1,181 @@
+<?php
+require_once "../model/ModelTypeBien.php";
+require_once "../model/ModelAnnonce.php";
+require_once "../controller/Type_bien.Class.php";
+
+class ViewAnnonce
+{
+    public static function FormAnnonce()
+    {
+        $type_bien = ModelTypeBien::getTypeBien();
+
+
+?>
+
+        <div class=" container mt-3">
+            <div class="text-center" id='erreurs'></div>
+            <form name="ajout_user" id="formmodification" method="post" action=<?php echo ROOTDIR . "?routing=verificationAnnonce" ?> enctype="multipart/form-data">
+
+
+                <div class="form-group">
+                    <select required id="type_bien_id" name="type_bien_id" class="form-control">
+                        <option value="">Choose ton type</option>
+                        <?php foreach ($type_bien as $type) {
+                        ?>
+                            <option value="<?php echo $type->getId() ?>"><?php echo $type->getLibelle() ?></option>
+                        <?php }
+                        ?>
+
+
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <input type="text" name="titre" id="titre" class="form-control" aria-describedby="titre" value="" placeholder="titre" required>
+                </div>
+                <div class="form-group">
+                    <textarea name="description" id="description" class="form-control" aria-describedby="description" value="" placeholder="description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="number" name="surface" id="surface" class="form-control" aria-describedby="surface" value="" placeholder="surface" required>
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlFile1">Ajoutez une photo</label>
+                    <input type="file" required class="form-control-file" id="photo" name="photo">
+                </div>
+
+                <div class="form-group">
+                    <input type="text" name="adresse" id="adresse" class="form-control" aria-describedby="adresse" value="" placeholder="adresse" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="ville" id="ville" class="form-control" aria-describedby="ville" value="" placeholder="ville" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="codpost" id="codpost" class="form-control" aria-describedby="codpost" value="" placeholder="codpost" required>
+                </div>
+                <div class="form-group">
+                    <input type="number" name="prix" id="prix" class="form-control" aria-describedby="prix" value="" placeholder="prix" required>
+                </div>
+                <div class="form-group"><select name="type" id="type" class="form-control">
+                        <option>Selectionne ton types</option>
+                        <option value="0">Location</option>
+                        <option value="1">Achat</option>
+                    </select></div>
+
+
+
+
+                <button type="submit" id="ajouter" name="ajouter" class="btn btn-success">Ajouter</button>
+                <button type="reset" name="annuler" class="btn btn-danger">Annuler</button>
+            </form>
+        </div>
+
+    <?php }
+
+    public static function ListAnnonce()
+    {
+        $annonces = ModelAnnonce::getListAnnonce();
+    ?>
+        <div class="container">
+            <h3 class="h3">Listes des annonces</h3>
+            <div class="row">
+
+                <?php
+
+                foreach ($annonces as $annonce) {
+                ?>
+                    <div class="col-md-3 mb-3">
+                        <div class="product-grid6">
+                            <div class="product-image6">
+                                <a href="#">
+                                    <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $annonce->getPhotos() ?>">
+                                </a>
+                            </div>
+                            <div class="product-content">
+                                <h3 class="title"><a href="#"><?php echo $annonce->getTitre() ?></a></h3>
+                                <div class="price"><?php
+                                                    if ($annonce->getType() == "0") {
+                                                        $text = "Location : " . $annonce->getPrix() . " $/Mois";
+                                                    } else {
+                                                        $text = "Vente : " . $annonce->getPrix() . " $";
+                                                    }
+                                                    echo $text;
+                                                    ?>
+                                    <span></span>
+                                </div>
+                            </div>
+                            <ul class="social">
+                                <li><a href="<?php echo ROOTDIR . "?routing=singleAnnonce&id=" . $annonce->getId() ?>" data-tip="Quick View"><i class="fa fa-search"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                <?php
+
+                }
+
+                ?>
+            </div>
+
+        </div>
+
+    <?php
+
+
+    }
+
+    public static function singleAnnonce($id)
+    {
+        $annonce = ModelAnnonce::getAnnonceById($id);
+    ?>
+        <div class="container">
+            <h3 class="h3"><?php echo $annonce->getTitre() ?></h3>
+            <div class="row">
+                <div class="col-md-3 col-sm-6">
+                    <div class="product-grid6">
+                        <div class="product-image6">
+                            <a href="#">
+                                <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $annonce->getPhotos() ?>">
+                            </a>
+                        </div>
+                        <div class="product-content">
+                            <div class="price"><?php
+                                                if ($annonce->getType() == "0") {
+                                                    $text = "Location : " . $annonce->getPrix() . " $/Mois";
+                                                } else {
+                                                    $text = "Vente : " . $annonce->getPrix() . " $";
+                                                }
+                                                echo $text;
+                                                ?>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9 col-sm-6">
+                        <div class="product-content">
+                            <div class="price"><?php
+                                                if ($annonce->getType() == "0") {
+                                                    $text = "<h4>Prix : </h4>" . $annonce->getPrix() . " $/Mois";
+                                                } else {
+                                                    $text = "<h4>Prix : </h4>" . $annonce->getPrix() . " $";
+                                                }
+                                                echo $text;
+                                        
+                                                ?>
+                                                <h4>Description : </h4> <?php echo $annonce->getDescription() ?>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+<?php
+
+
+    }
+}
+?>
