@@ -62,10 +62,10 @@ class ModelUser
         $requete->execute([$user->getMail(), $user->getPass()]);
         $donnees = $requete->fetch(PDO::FETCH_ASSOC);
         if ($donnees == false) { // Si l'utilisateur n'existe pas, on renvoi un objet vide
-			return false ;
-		} else {
-			return new User ( $donnees );
-		}
+            return false;
+        } else {
+            return new User($donnees);
+        }
     }
     public  static function VerifUniciteMail($mail)
     {
@@ -106,7 +106,6 @@ class ModelUser
         $requetModif->bindValue(':mail', $user->getMail());
         $requetModif->bindValue(':pass', $user->getPass());
         $requetModif->bindValue(':tel', $user->getTel());
-
-        
-}
+        $requetModif->execute();
+    }
 }

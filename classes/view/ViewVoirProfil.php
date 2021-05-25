@@ -16,7 +16,7 @@ class ViewVoirProfil
                     <p class="card-text"><b>Prenom:</b><?php echo " " . $profil['prenom'] ?></p>
                     <p class="card-text"><b>Mail:</b><?php echo " " . $profil['mail'] ?></p>
                     <p class="card-text"><b>Tel:</b><?php echo " " . $profil['tel'] ?></p>
-                    <a class="btn btn-success col-12" href="ControllerModifUser.php?mail=<?php echo $profil['mail'] . "&id=" . $profil['id']  ?>">Modifier le Profil</a>
+                    <a class="btn btn-success col-12" href="<?php echo ROOTDIR . "?routing=modifUser&id=" . $profil['id'] ?> ?>">Modifier le Profil</a>
 
                 </div>
             </div>

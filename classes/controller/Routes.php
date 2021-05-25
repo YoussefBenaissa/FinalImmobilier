@@ -126,8 +126,7 @@ if (isset($_GET['routing'])) {
                                     'token' => $token
                                 ]
                             );
-                            echo ($data[3]);
-                            echo ($user->getPass());
+
                             ModelUser::Ajoutuser($user);
                             ViewTemplate::alert("Merci pour votre inscription, pour valider votre inscription veuillez ", "success", "Routes.php?routing=controllerValidation&mail=" . $_POST['mail'] . "&token=" . $token);
                         }
@@ -466,15 +465,15 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
                 ViewTemplate::header();
                 ViewTemplate::navbar();
-                
+
                 ViewAnnonce::ListAnnonce();
 
                 ViewTemplate::footer();
-              
+
 
                 break;
             }
-            case 'singleAnnonce': {
+        case 'singleAnnonce': {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelAnnonce.php";
@@ -482,15 +481,198 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
                 ViewTemplate::header();
                 ViewTemplate::navbar();
-                
+
                 ViewAnnonce::singleAnnonce($_GET["id"]);
 
                 ViewTemplate::footer();
-              
+
 
                 break;
             }
-            
+        case 'verificationModifUser': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewVoirProfil.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewModifUser.php";
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                if (isset($_GET['id'])) {
+                    if (ModelUser::getbyId($_GET['id'])) {
+
+                        ViewModifUser::FormModification($_GET['id']);
+                    } else {
+                        ViewTemplate::alert("L'utilisateur n'existe pas.", "danger", "ControllerAccueil.php");
+                    }
+                } else {
+                    if (isset($_POST['modif'])) {
+
+                        if (isset($_POST['id']) && ModelUser::getbyId($_POST['id'])) {
+                            $donnees = [$_POST['id'], $_POST['nom'], $_POST['prenom'], $_POST['mail'], $_POST['pass'], $_POST['tel']];
+                            $types = ["id", "nom", "prenom", "email", "pass", "tel"];
+                            $data = Utils::valider($donnees, $types);
+
+
+                            if ($data) {
+                                $user = new User(
+                                    [
+                                        'id' => $data[0],
+                                        'nom' => $data[1],
+                                        'prenom' => $data[2],
+                                        'mail' => $data[3],
+                                        'pass' => password_hash($data[4], PASSWORD_DEFAULT),
+                                        'tel' => $data[5],
+
+                                    ]
+                                );
+
+                                ModelUser::ModifProfil($user);
+                                ViewTemplate::alert("La modification a été faite avec succès.", "success", htmlspecialchars($_SERVER['PHP_SELF']));
+                            } else {
+                                ViewModifUser::FormModification($data[0]);
+                            }
+                        } else {
+                            ViewTemplate::alert("Aucune donnée n'a été transmise.", "danger", null);
+                        }
+                    } else {
+                        ViewTemplate::alert("Aucune donnée n'a été transmise.", "danger", null);
+                    }
+                }
+
+
+                ViewTemplate::footer();
+
+
+
+                break;
+            }
+        case 'modifUser': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewVoirProfil.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewModifUser.php";
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                ViewModifUser::FormModification($_GET['id']);
+                ViewTemplate::footer();
+
+
+
+                break;
+            }
+        case 'annonceUser': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewModifUser.php";
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                ViewAnnonce::AnnonceUser($_SESSION['id']);
+                ViewTemplate::footer();
+
+
+
+                break;
+            }
+        case 'suppressionAnnonceUser': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewModifUser.php";
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+
+                ViewTemplate::footer();
+
+
+
+                break;
+            }
+        case 'modifAnnonce': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelAnnonce.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewModifUser.php";
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                ViewAnnonce::FormModifAnnonce($_GET['id']);
+                ViewTemplate::footer();
+
+
+
+                break;
+            }
+        case 'verificationModifAnnonce': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelAnnonce.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewModifUser.php";
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                if (isset($_GET['id'])) {
+                    if (ModelAnnonce::getAnnonceById($_GET['id'])) {
+
+                        ViewAnnonce::FormModifAnnonce($_GET['id']);
+                    } else {
+                        ViewTemplate::alert("L'utilisateur n'existe pas.", "danger", "ControllerAccueil.php");
+                    }
+                } else {
+                    if (isset($_POST['modifannonce'])) {
+
+                        if (isset($_POST['id']) && ModelAnnonce::getAnnonceById($_POST['id'])) {
+                            $donnees = [$_POST['id'], $_POST['titre'], $_POST['description'], $_POST['surface'], $_POST['adresse'], $_POST['ville'], $_POST['codpost'], $_POST['prix'], $_POST['type'], $_POST['type_bien_id']];
+                            $types = ["id", "titre", "description", "surface", "adresse", "ville", "codpost", "prix", "type", "type_bien_id"];
+                            $data = Utils::valider($donnees, $types);
+                            if ($data) {
+                                $extensions = ["jpg", "jpeg", "png", "gif"];
+                                $upload = Utils::upload($extensions, $_FILES['photo']);
+                                if ($upload['uploadOk']) {
+                                    $file_name = $upload['file_name'];
+
+                                    $Annonce = new Annonce(
+
+                                        [
+                                            'id' => $data[0],
+                                            'titre' => $data[1],
+                                            'description' => $data[2],
+                                            'surface' => $data[3],
+                                            'photos' => $file_name,
+                                            'adresse' => $data[4],
+                                            'ville' => $data[5],
+                                            'codpost' => $data[6],
+                                            'prix' => $data[7],
+                                            'type' => $data[8],
+                                            'type_bien_id' => $data[9]
+                                        ]
+                                    );
+
+                                    ModelAnnonce::ModifAnnonce($Annonce);
+                                    ViewTemplate::alert("La modification a été faite avec succès.", "success", htmlspecialchars($_SERVER['PHP_SELF']));
+                                } else {
+                                    ViewModifUser::FormModification($data[0]);
+                                }
+                            } else {
+                                ViewTemplate::alert("Aucune donnée n'a été transmise.", "danger", null);
+                            }
+                        } else {
+                            ViewTemplate::alert("Aucune donnée n'a été transmise.", "danger", null);
+                        }
+                    }
+                    ViewTemplate::footer();
+                    break;
+                }
+            }
     }
 } else { // Sinon, on affiche la page principale du site
 

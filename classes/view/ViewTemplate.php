@@ -46,7 +46,7 @@ class ViewTemplate
                         <span></span>
                         <span></span>
                     </button>
-                    <a class="navbar-brand text-brand" href="<?php echo ROOTDIR; ?>" >Youssef<span class="color-b">Agency</span></a>
+                    <a class="navbar-brand text-brand" href="<?php echo ROOTDIR; ?>">Youssef<span class="color-b">Agency</span></a>
                     <button type="button" class="btn btn-link nav-search navbar-toggle-box-collapse d-md-none" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-expanded="false">
                         <span class="fa fa-search" aria-hidden="true"></span>
                     </button>
@@ -62,7 +62,7 @@ class ViewTemplate
                             ?>
                                 <li class="nav-item">
 
-                                    <a class="nav-link" href= "<?php echo ROOTDIR."?routing=inscription" ?>">Inscription</a>
+                                    <a class="nav-link" href="<?php echo ROOTDIR . "?routing=inscription" ?>">Inscription</a>
 
                                 </li>
                             <?php
@@ -74,7 +74,7 @@ class ViewTemplate
                             if (isset($_SESSION["connect"])) { ?>
                                 <li class="nav-item">
 
-                                    <a class="nav-link"  href= "<?php echo ROOTDIR."?routing=monProfil" ?>">Voir mon profil</a>
+                                    <a class="nav-link" href="<?php echo ROOTDIR . "?routing=monProfil" ?>">Voir mon profil</a>
 
                                 </li>
 
@@ -94,12 +94,13 @@ class ViewTemplate
                                     Pages
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown"><?php if (isset($_SESSION["connect"])) { ?>
-                                        <a class="dropdown-item" href= "<?php echo ROOTDIR."?routing=creationAnnonce" ?>" >Creer une annonce</a>
-                                        <a class="dropdown-item" href= "<?php echo ROOTDIR."?routing=listAnnonce" ?>">Parcourir les anonces</a>
-                                        <a class="dropdown-item" href= "<?php echo ROOTDIR."?routing=favorisAnnonce" ?>">Voir Favoris</a>
+                                        <a class="dropdown-item" href="<?php echo ROOTDIR . "?routing=creationAnnonce" ?>">Creer une annonce</a>
+                                        <a class="dropdown-item" href="<?php echo ROOTDIR . "?routing=annonceUser" ?>">Mes annonces</a>
+                                        <a class="dropdown-item" href="<?php echo ROOTDIR . "?routing=listAnnonce" ?>">Parcourir les anonces</a>
+                                        <a class="dropdown-item" href="<?php echo ROOTDIR . "?routing=favorisAnnonce" ?>">Voir Favoris</a>
 
                                     <?php } else { ?>
-                                        <a class="dropdown-item" href= "<?php echo ROOTDIR."?routing=listAnnonce" ?>">Parcourir les anonces</a>
+                                        <a class="dropdown-item" href="<?php echo ROOTDIR . "?routing=listAnnonce" ?>">Parcourir les anonces</a>
 
 
                                     <?php }
@@ -116,7 +117,7 @@ class ViewTemplate
                             // condition pour ne plus afficher le connexion qd on est co
                             if (isset($_SESSION["connect"])) { ?>
                                 <li class="nav-item">
-                                    <a class="nav-link"  href= "<?php echo ROOTDIR."?routing=deconnexion" ?>" >Déconnexion</a>
+                                    <a class="nav-link" href="<?php echo ROOTDIR . "?routing=deconnexion" ?>">Déconnexion</a>
 
                                 </li>
                             <?php
@@ -125,7 +126,7 @@ class ViewTemplate
                             ?>
                                 <li class="nav-item">
 
-                                    <a class="nav-link" href= "<?php echo ROOTDIR."?routing=connexion" ?>" >Connexion</a>
+                                    <a class="nav-link" href="<?php echo ROOTDIR . "?routing=connexion" ?>">Connexion</a>
 
                                 </li>
                             <?php
@@ -140,22 +141,20 @@ class ViewTemplate
                 </div>
             </nav>
         </div>
-        
+
     <?php }
     public static function alert($message, $type, $lien)
     {
     ?>
         <div class=" container text-center alert alert-<?php echo $type; ?> mt-3" role="alert">
-            <?php echo $message; 
-            if ( $lien != Null) {?> 
+            <?php echo $message;
+            if ($lien != Null) { ?>
 
-                <br />cliquez <a href="<?php echo $lien ?>"> ici</a> 
+                <br />cliquez <a href="<?php echo $lien ?>"> ici</a>
 
             <?php }
-            ?>  
+            ?>
         </div>
-        <?php 
-        } 
-            
-
+<?php
+    }
 }

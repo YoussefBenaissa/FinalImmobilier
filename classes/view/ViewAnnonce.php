@@ -76,6 +76,7 @@ class ViewAnnonce
     public static function ListAnnonce()
     {
         $annonces = ModelAnnonce::getListAnnonce();
+
     ?>
         <div class="container">
             <h3 class="h3">Listes des annonces</h3>
@@ -127,6 +128,7 @@ class ViewAnnonce
     public static function singleAnnonce($id)
     {
         $annonce = ModelAnnonce::getAnnonceById($id);
+
     ?>
         <div class="container">
             <h3 class="h3"><?php echo $annonce->getTitre() ?></h3>
@@ -153,29 +155,155 @@ class ViewAnnonce
                     </div>
                 </div>
                 <div class="col-md-9 col-sm-6">
-                        <div class="product-content">
-                            <div class="price"><?php
-                                                if ($annonce->getType() == "0") {
-                                                    $text = "<h4>Prix : </h4>" . $annonce->getPrix() . " $/Mois";
-                                                } else {
-                                                    $text = "<h4>Prix : </h4>" . $annonce->getPrix() . " $";
-                                                }
-                                                echo $text;
-                                        
-                                                ?>
-                                                <h4>Description : </h4> <?php echo $annonce->getDescription() ?>
-                            </div>
+                    <div class="product-content">
+                        <div class="price"><?php
+                                            if ($annonce->getType() == "0") {
+                                                $text = "<h4>Prix : </h4>" . $annonce->getPrix() . " $/Mois";
+                                            } else {
+                                                $text = "<h4>Prix : </h4>" . $annonce->getPrix() . " $";
+                                            }
+                                            echo $text;
+
+                                            ?>
+                            <h4>Description : </h4> <?php echo $annonce->getDescription() ?>
                         </div>
-                        
                     </div>
+
                 </div>
             </div>
+        </div>
 
         </div>
 
-<?php
+    <?php
 
 
     }
+    public static function AnnonceUser($id)
+    {
+        $userAnonces = ModelAnnonce::getAnnonceUserById($id);
+    ?>
+        <div class="container">
+            <h3 class="h3">Liste de mes annonces</h3>
+            <div class="row">
+                <?php foreach ($userAnonces as $userannonce) {
+                ?>
+                    <div class="col-md-3 mt-2 ">
+                        <div class="product-grid6">
+                            <div class="product-image6">
+                                <a href="#">
+                                    <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $userannonce->getPhotos() ?>">
+                                </a>
+                            </div>
+                            <div class="product-content">
+                                <div class="price"><?php
+                                                    if ($userannonce->getType() == "0") {
+                                                        $text = "Location : " . $userannonce->getPrix() . " $/Mois";
+                                                    } else {
+                                                        $text = "Vente : " . $userannonce->getPrix() . " $";
+                                                    }
+                                                    echo $text;
+                                                    ?>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7 ">
+                        <div class="product-content">
+                            <div class="price"><?php
+                                                if ($userannonce->getType() == "0") {
+                                                    $text = "<h4>Prix : </h4>" . $userannonce->getPrix() . " $/Mois";
+                                                } else {
+                                                    $text = "<h4>Prix : </h4>" . $userannonce->getPrix() . " $";
+                                                }
+                                                echo $text;
+
+                                                ?>
+                                <h4>Description : </h4> <?php echo $userannonce->getDescription() ?>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-2 "><a class="btn btn-success " href="<?php echo ROOTDIR . "?routing=modifAnnonce&id=" . $userannonce->getId() ?>"> Modifier l'annonce</a>
+                        <button class="btn btn-danger mt-2" href="">Supprimer</button>
+                    </div>
+                <?php }
+                ?>
+            </div>
+        </div>
+
+    <?php }
+
+    public static function FormModifAnnonce($id)
+    {
+        $annonce = ModelAnnonce::getAnnonceById($id);
+        $type_bien = ModelTypeBien::getTypeBien();
+
+
+
+    ?>
+
+        <div class=" container mt-3">
+            <div class="text-center" id='erreurs'></div>
+            <form name="ajout_user" id="formmodification" method="post" action=<?php echo ROOTDIR . "?routing=verificationModifAnnonce" ?> enctype="multipart/form-data">
+                <input type="hidden" class="form-control" id="id" name="id" value="<?php echo $annonce->getId() ?>">
+
+
+                <div class="form-group">
+                    <select required id="type_bien_id" name="type_bien_id" class="form-control">
+                        <option value="">Choose ton type</option>
+                        <?php foreach ($type_bien as $type) {
+                        ?>
+                            <option value="<?php echo $type->getId() ?>"><?php echo $type->getLibelle() ?></option>
+                        <?php }
+                        ?>
+
+
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <input type="text" name="titre" id="titre" class="form-control" aria-describedby="titre" value="<?php echo $annonce->getTitre() ?>" placeholder="titre" required>
+                </div>
+                <div class="form-group">
+                    <textarea name="description" id="description" class="form-control" aria-describedby="description" placeholder="description" required> <?php echo $annonce->getDescription() ?></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="number" name="surface" id="surface" class="form-control" aria-describedby="surface" value="<?php echo $annonce->getSurface() ?>" placeholder="surface" required>
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlFile1">Ajoutez une photo</label>
+                    <input type="file" required class="form-control-file" id="photo" name="photo">
+                </div>
+
+                <div class="form-group">
+                    <input type="text" name="adresse" id="adresse" class="form-control" aria-describedby="adresse" value="<?php echo $annonce->getAdresse() ?>" placeholder="adresse" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="ville" id="ville" class="form-control" aria-describedby="ville" value="<?php echo $annonce->getVille() ?>" placeholder="ville" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="codpost" id="codpost" class="form-control" aria-describedby="codpost" value="<?php echo $annonce->getCodpost() ?>" placeholder="codpost" required>
+                </div>
+                <div class="form-group">
+                    <input type="number" name="prix" id="prix" class="form-control" aria-describedby="prix" value="<?php echo $annonce->getPrix() ?>" placeholder="prix" required>
+                </div>
+                <div class="form-group"><select name="type" id="type" class="form-control">
+                        <option>Selectionne ton types</option>
+                        <option value="0">Location</option>
+                        <option value="1">Achat</option>
+                    </select></div>
+
+
+
+
+                <button type="submit" id="modifannonce" name="modifannonce" class="btn btn-success">Modifier</button>
+                <button type="reset" name="annuler" class="btn btn-danger">Annuler</button>
+            </form>
+        </div>
+
+<?php }
 }
 ?>
