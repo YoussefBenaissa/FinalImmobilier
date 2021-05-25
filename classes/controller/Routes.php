@@ -521,8 +521,8 @@ if (isset($_GET['routing'])) {
                                         'nom' => $data[1],
                                         'prenom' => $data[2],
                                         'mail' => $data[3],
-                                        'pass' => password_hash($data[4], PASSWORD_DEFAULT),
-                                        'tel' => $data[5],
+                                        'pass' => md5($data[4]),
+                                        'tel' => $data[5]
 
                                     ]
                                 );
@@ -580,14 +580,27 @@ if (isset($_GET['routing'])) {
                 break;
             }
         case 'suppressionAnnonceUser': {
-                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
-                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
-                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelAnnonce.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
-                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewModifUser.php";
+
                 ViewTemplate::header();
                 ViewTemplate::navbar();
+                if (isset($_GET['id'])) {
+                    if (/*existance user*/ModelAnnonce::getAnnonceById($_GET['id'])) { // supression de l'utilisateur
+                        ModelAnnonce::suppAnnonce($_GET['id']);
+                        ViewTemplate::alert("L'annonce a été supprimé avec succès.", "success", "ListeUsers.php");
+                    } else {
+                        ViewTemplate::alert("L'annonce n'existe pas.", "danger", "ListeUsers.php");
+                    }
+                } else {
+                    ViewTemplate::alert(" Aucune donnée n'a été transmise.", "danger", "ListeUsers.php");
+                }
+                ViewTemplate::footer();
+
+
+
+                break;
 
                 ViewTemplate::footer();
 

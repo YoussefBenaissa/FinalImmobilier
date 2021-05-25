@@ -18,15 +18,11 @@ class ModelAnnonce
         $requette->bindValue(':prix', $annonce->getPrix());
         $requette->bindValue(':type', $annonce->getType());
         $requette->bindValue(':type_bien_id', $annonce->getType_bien_id());
-
         // Ex�cution de la requ�te.
         $requette->execute();
         // retour erreur sql == > print_r($requette->errorInfo());
-        print_r($requette->errorInfo());
-
         $idannonce = $idcon->lastInsertId();
         $requete2 = $idcon->prepare(' INSERT INTO user_annonce VALUES (:user_id,:annonce_id)');
-
         $requete2->execute([
             ':user_id' => $userId,
             ':annonce_id' => $idannonce,
@@ -106,5 +102,13 @@ class ModelAnnonce
         $requetModif->bindValue(':type_bien_id', $annonce->getType_bien_id());
 
         $requetModif->execute();
+    }
+    public static function suppAnnonce($id)
+    {
+        $idcon = connexion();
+        $requetModif = $idcon->prepare("DELETE  annonce,user_annonce FROM annonce inner join user_annonce on annonce.id=user_annonce.annonce_id WHERE annonce.id = :id");
+        $requetModif->execute([
+            ':id' => $id,
+        ]);
     }
 }

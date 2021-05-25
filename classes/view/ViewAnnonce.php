@@ -183,7 +183,7 @@ class ViewAnnonce
     {
         $userAnonces = ModelAnnonce::getAnnonceUserById($id);
     ?>
-        <div class="container">
+        <div class="container cc">
             <h3 class="h3">Liste de mes annonces</h3>
             <div class="row">
                 <?php foreach ($userAnonces as $userannonce) {
@@ -225,11 +225,33 @@ class ViewAnnonce
                         </div>
 
                     </div>
-                    <div class="col-md-2 "><a class="btn btn-success " href="<?php echo ROOTDIR . "?routing=modifAnnonce&id=" . $userannonce->getId() ?>"> Modifier l'annonce</a>
-                        <button class="btn btn-danger mt-2" href="">Supprimer</button>
+                    <div class="col-md-2 ">
+                        <a class="btn btn-success " href="<?php echo ROOTDIR . "?routing=modifAnnonce&id=" . $userannonce->getId() ?>"> Modifier l'annonce</a>
+
+                        <button class="btn btn-danger mt-2 supp-annonceuser" data-toggle="modal" id="<?php echo $userannonce->getId() ?>" data-target="#modalsupp">Supprimer</button>
                     </div>
                 <?php }
                 ?>
+            </div>
+        </div>
+        <div class="modal fade" id="modalsupp" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Supprimer l'annonce</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Etes vous sur de vouloir suprimer cette annonce ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger annuler" data-dismiss="modal">Annuler</button>
+                        <a class="btn btn-success annonce-supp" href="<?php echo ROOTDIR . "?routing=suppressionAnnonceUser&id=" . $userannonce->getId() ?>" name="Supprimer">Supprimer</a>
+
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -302,7 +324,10 @@ class ViewAnnonce
                 <button type="submit" id="modifannonce" name="modifannonce" class="btn btn-success">Modifier</button>
                 <button type="reset" name="annuler" class="btn btn-danger">Annuler</button>
             </form>
+
         </div>
+
+
 
 <?php }
 }

@@ -1,7 +1,7 @@
 typesTab = {
   nom: /^[a-zA-z\s\p{L}]{2,}$/u,
   prenom: /^[a-zA-z\s\p{L}]{2,}$/u,
-  mail : /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  mail: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   pass: /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/,
   tel: /^[0-9]{8,}$/,
   confirmpass: /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/,
@@ -81,3 +81,46 @@ $("#formMailMdp").submit(function (e) {
   valider(donnees, types, e);
 });
 
+//ajax supp:
+$(".annonce-supp").click(function (e) {
+  e.preventDefault();
+
+  let request = $.ajax({
+    type: "GET",
+    url: $(this).attr("href"),
+    dataType: "html",
+  });
+
+  request.done(function (reponse) {
+    $(".annuler").trigger("click"); //je génère un clic artficiel sur le bouton annuler $(".annuler").click(); cette methode marche aussi
+    listeAnnonce();
+  });
+  request.fail(function (http_error) {
+    //Code à jouer en cas d'éxécution en erreur du script du PHP
+
+    let server_msg = http_error.responseText;
+    let code = http_error.status;
+    let code_label = http_error.statusText;
+    alert("Erreur " + code + " (" + code_label + ") : " + server_msg);
+  });
+});
+//ListeAnnonce:
+function listeAnnonce() {
+  let request = $.ajax({
+    type: "GET",
+    url: "immobilierRoute/classes/controller/Routes.php?routing=annonceUser",
+    dataType: "html",
+  });
+
+  request.done(function (response) {
+    console.log(response);
+    $("body").html(response);
+  });
+
+  request.fail(function (http_error) {
+    let server_msg = http_error.responseText;
+    let code = http_error.status;
+    let code_label = http_error.statusText;
+    alert("Erreur " + code + " (" + code_label + ") : " + server_msg);
+  });
+}
