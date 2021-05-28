@@ -105,7 +105,9 @@ class ViewAnnonce
                                                     ?>
                                     <span></span>
                                 </div>
+
                             </div>
+
                             <ul class="social">
                                 <li><a href="<?php echo ROOTDIR . "?routing=singleAnnonce&id=" . $annonce->getId() ?>" data-tip="Quick View"><i class="fa fa-search"></i></a></li>
                             </ul>
@@ -128,7 +130,7 @@ class ViewAnnonce
     public static function singleAnnonce($id)
     {
         $annonce = ModelAnnonce::getAnnonceById($id);
-
+        $users = ModelAnnonce::getUserAnnonceById($id);
     ?>
         <div class="container">
             <h3 class="h3"><?php echo $annonce->getTitre() ?></h3>
@@ -154,7 +156,7 @@ class ViewAnnonce
                         </div>
                     </div>
                 </div>
-                <div class="col-md-9 col-sm-6">
+                <div class="col-md-7 col-sm-6">
                     <div class="product-content">
                         <div class="price"><?php
                                             if ($annonce->getType() == "0") {
@@ -167,18 +169,27 @@ class ViewAnnonce
                                             ?>
                             <h4>Description : </h4> <?php echo $annonce->getDescription() ?>
                         </div>
+                        <div>
+                            <h4>Publier par:</h4>
+
+                            <a><?php foreach ($users as $user) { ?>
+                                    <a href="<?php echo ROOTDIR . "?routing=voirProfil&id=" . $user->getId() ?>"> <?php echo $user->getNom() . " " . $user->getPrenom() ?></a>
+
+                                <?php } ?>
+
+                        </div>
                     </div>
 
                 </div>
+                <!-- Creation d'un button pour un Admin qui permet de supprimer une annonce frauduleuse -->
+                <div class="col-md-2 col-sm-6"><?php if (isset($_SESSION['admin'])) { ?>
+                        <a class="btn btn-danger" href="<?php echo ROOTDIR . "?routing=suppressionAnnonceUser&id=" . $annonce->getId() ?>">Suprimer cette annonce</a>
+                    <?php } else { ?>
+                    <?php } ?>
+                </div>
             </div>
         </div>
-
-        </div>
-
-    <?php
-
-
-    }
+    <?php }
     public static function AnnonceUser($id)
     {
         $userAnonces = ModelAnnonce::getAnnonceUserById($id);
@@ -188,7 +199,7 @@ class ViewAnnonce
             <div class="row">
                 <?php foreach ($userAnonces as $userannonce) {
                 ?>
-                    <div class="col-md-3 mt-2 ">
+                    <div class="col-md-3 mt-2  " id="bloc_<?php echo $userannonce->getId() ?>">
                         <div class="product-grid6">
                             <div class="product-image6">
                                 <a href="#">
@@ -209,7 +220,7 @@ class ViewAnnonce
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-7 ">
+                    <div class="col-md-7 " id="bloc_content_<?php echo $userannonce->getId() ?>">
                         <div class="product-content">
                             <div class="price"><?php
                                                 if ($userannonce->getType() == "0") {
@@ -225,7 +236,7 @@ class ViewAnnonce
                         </div>
 
                     </div>
-                    <div class="col-md-2 ">
+                    <div class="col-md-2 " id="bloc_delete_<?php echo $userannonce->getId() ?>">
                         <a class="btn btn-success " href="<?php echo ROOTDIR . "?routing=modifAnnonce&id=" . $userannonce->getId() ?>"> Modifier l'annonce</a>
 
                         <button class="btn btn-danger mt-2 supp-annonceuser" data-toggle="modal" id="<?php echo $userannonce->getId() ?>" data-target="#modalsupp">Supprimer</button>
@@ -234,6 +245,7 @@ class ViewAnnonce
                 ?>
             </div>
         </div>
+        <!-- modal supp -->
         <div class="modal fade" id="modalsupp" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -248,7 +260,7 @@ class ViewAnnonce
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger annuler" data-dismiss="modal">Annuler</button>
-                        <a class="btn btn-success annonce-supp" href="<?php echo ROOTDIR . "?routing=suppressionAnnonceUser&id=" . $userannonce->getId() ?>" name="Supprimer">Supprimer</a>
+                        <a class="btn btn-success annonce-supp" name="Supprimer">Supprimer</a>
 
                     </div>
                 </div>

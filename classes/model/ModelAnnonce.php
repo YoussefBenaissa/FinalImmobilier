@@ -111,4 +111,19 @@ class ModelAnnonce
             ':id' => $id,
         ]);
     }
+    public  static function getUserAnnonceById($id)
+    {
+        $idcon = connexion();
+        $requete = $idcon->prepare('SELECT * FROM `user_annonce` INNER JOIN user on user.id=user_annonce.user_id WHERE annonce_id =?');
+        $requete->execute([$id]);
+        if ($donnees = $requete->fetch(PDO::FETCH_ASSOC)) { //test si la requête renvoi des données
+            do {
+                $userannonces[] = new User($donnees);
+            } while ($donnees = $requete->fetch(PDO::FETCH_ASSOC));
+
+            return $userannonces;
+        } else {
+            return null;
+        }
+    }
 }

@@ -52,7 +52,11 @@ class ViewTemplate
                     </button>
                     <div class="navbar-collapse collapse justify-content-center" id="navbarDefault">
                         <ul class="navbar-nav">
+
                             <?php
+
+
+
                             // condition pour ne plus afficher le inscription qd on est co
                             if (isset($_SESSION["connect"])) { ?>
 
@@ -87,17 +91,42 @@ class ViewTemplate
 
                             }
                             ?>
+                            <?php
+                            // condition pour  afficher la gestion admin qd on est co en admin
+                            if (isset($_SESSION["admin"])) { ?>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="<?php echo ROOTDIR . "?routing=monProfil" ?>">Gestion</a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="<?php echo ROOTDIR . "?routing=creationTypeBien" ?>">Types de biens</a>
+                                        <a class="dropdown-item" href="<?php echo ROOTDIR . "?routing=listeUser" ?>">ListeUser</a>
+
+                                </li>
+
+                            <?php
+
+                            } else {
+                            ?>
+
+                            <?php
+
+                            }
+                            ?>
 
 
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Pages
                                 </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown"><?php if (isset($_SESSION["connect"])) { ?>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+
+                                    <?php if (isset($_SESSION["connect"])) { ?>
                                         <a class="dropdown-item" href="<?php echo ROOTDIR . "?routing=creationAnnonce" ?>">Creer une annonce</a>
                                         <a class="dropdown-item" href="<?php echo ROOTDIR . "?routing=annonceUser" ?>">Mes annonces</a>
                                         <a class="dropdown-item" href="<?php echo ROOTDIR . "?routing=listAnnonce" ?>">Parcourir les anonces</a>
                                         <a class="dropdown-item" href="<?php echo ROOTDIR . "?routing=favorisAnnonce" ?>">Voir Favoris</a>
+
+
 
                                     <?php } else { ?>
                                         <a class="dropdown-item" href="<?php echo ROOTDIR . "?routing=listAnnonce" ?>">Parcourir les anonces</a>

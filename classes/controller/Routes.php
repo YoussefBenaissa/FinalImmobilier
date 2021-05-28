@@ -65,6 +65,10 @@ if (isset($_GET['routing'])) {
                             $_SESSION["connect"] = True;
                             $_SESSION["id"] =  $user_final->getId();
                             $_SESSION["role"] =  $user_final->getRole();
+                            if ($_SESSION["role"] == 1) {
+                                $_SESSION["role"] = "Admin";
+                                $_SESSION["admin"] = true;
+                            }
 
                             header("refresh:0;url=" . ROOTDIR);
                             ViewTemplate::header();
@@ -465,9 +469,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
                 ViewTemplate::header();
                 ViewTemplate::navbar();
-
                 ViewAnnonce::ListAnnonce();
-
                 ViewTemplate::footer();
 
 
@@ -481,12 +483,8 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
                 ViewTemplate::header();
                 ViewTemplate::navbar();
-
                 ViewAnnonce::singleAnnonce($_GET["id"]);
-
                 ViewTemplate::footer();
-
-
                 break;
             }
         case 'verificationModifUser': {
@@ -589,12 +587,12 @@ if (isset($_GET['routing'])) {
                 if (isset($_GET['id'])) {
                     if (/*existance user*/ModelAnnonce::getAnnonceById($_GET['id'])) { // supression de l'utilisateur
                         ModelAnnonce::suppAnnonce($_GET['id']);
-                        ViewTemplate::alert("L'annonce a été supprimé avec succès.", "success", "ListeUsers.php");
+                        ViewTemplate::alert("L'annonce a été supprimé avec succès.", "success", "Routes.php?routing=listAnnonce");
                     } else {
-                        ViewTemplate::alert("L'annonce n'existe pas.", "danger", "ListeUsers.php");
+                        ViewTemplate::alert("L'annonce n'existe pas.", "danger", "Routes.php");
                     }
                 } else {
-                    ViewTemplate::alert(" Aucune donnée n'a été transmise.", "danger", "ListeUsers.php");
+                    ViewTemplate::alert(" Aucune donnée n'a été transmise.", "danger", "Routes.php");
                 }
                 ViewTemplate::footer();
 
@@ -685,6 +683,186 @@ if (isset($_GET['routing'])) {
                     ViewTemplate::footer();
                     break;
                 }
+            }
+        case 'creationTypeBien': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTypeBien.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                ViewTypeBien::FormTypeBien();
+                ViewTypeBien::ListAnnonce();
+                ViewTemplate::footer();
+                break;
+            }
+        case 'modifTypeBien': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTypeBien.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelTypeBien.php";
+
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                ViewTypeBien::FormModifTypeBien($_GET['id']);
+                ViewTemplate::footer();
+                break;
+            }
+        case 'verificationModifTypeBien': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTypeBien.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelTypeBien.php";
+
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                if (isset($_GET['id'])) {
+                    if (ModelTypeBien::getTypeBienById($_GET['id'])) {
+
+                        ViewTypeBien::FormModifTypeBien($_GET['id']);
+                    } else {
+                        ViewTemplate::alert("Le type de bien n'existe pas.", "danger", "Routes.php");
+                    }
+                } else {
+                    if (isset($_POST['modiftypebien'])) {
+
+                        if (isset($_POST['id']) && ModelTypeBien::getTypeBienById($_POST['id'])) {
+                            $donnees = [$_POST['id'], $_POST['libelle']];
+                            $types = ["id", "libelle"];
+                            $data = Utils::valider($donnees, $types);
+                            if ($data) {
+                                $type_bien = new Type_Bien(
+                                    [
+                                        'id' => $data[0],
+                                        'libelle' => $data[1],
+
+                                    ]
+                                );
+
+                                ModelTypeBien::ModifTypeBien($type_bien);
+                                ViewTemplate::alert("La modification a été faite avec succès.", "success", htmlspecialchars($_SERVER['PHP_SELF']));
+                            } else {
+                                ViewTypeBien::FormModifTypeBien($data[0]);
+                            }
+                        } else {
+                            ViewTemplate::alert("Aucune donnée n'a été transmise.", "danger", null);
+                        }
+                    } else {
+                        ViewTemplate::alert("Aucune donnéeeeeeeeeeeeeee n'a été transmise.", "danger", null);
+                    }
+                }
+                ViewTemplate::footer();
+
+                break;
+            }
+
+        case 'verificationCreationTypeBien': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelTypeBien.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";;
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                if (isset($_POST['ajout'])) {
+                    $donnees = [$_POST['libelle']];
+                    $types = ["libelle"];
+                    $data = Utils::valider($donnees, $types);
+                    if ($data) {
+
+                        $typebien = new Type_Bien(
+                            [
+                                'libelle' => $data[0],
+
+                            ]
+                        );
+
+                        ModelTypeBien::AjoutTypeBien($typebien);
+                        ViewTemplate::alert("Merci pour la creation du type de bien ", "success", "Routes.php");
+                    }
+                } else {
+
+                    echo 'error';
+                }
+
+
+                ViewTemplate::footer();
+
+
+
+                break;
+            }
+        case 'suppressionTypeBien': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelTypeBien.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                if (isset($_GET['id'])) {
+                    if (/*existance user*/ModelTypeBien::getTypeBienById($_GET['id'])) { // supression de l'utilisateur
+                        ModelTypeBien::suppTypeBien($_GET['id']);
+                        ViewTemplate::alert("Le type bien a été supprimé avec succès.", "success", "Routes.php?routing=creationTypeBien");
+                    } else {
+                        ViewTemplate::alert("L'annonce n'existe pas.", "danger", "Routes.php");
+                    }
+                } else {
+                    ViewTemplate::alert(" Aucune donnée n'a été transmise.", "danger", "Routes.php");
+                }
+                ViewTemplate::footer();
+                break;
+            }
+        case 'listeUser': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewlistUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                ViewListUser::ListUser();
+                ViewTemplate::footer();
+
+
+
+                break;
+            }
+        case 'supressionUser': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewlistUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                if (isset($_GET['id'])) {
+                    if (/*existance user*/ModelUser::getById($_GET['id'])) { // supression de l'utilisateur
+                        ModelUser::suppUser($_GET['id']);
+                        ViewTemplate::alert("L'utilisateur a été supprimé avec succès.", "success", "Routes.php?routing=listeUser");
+                    } else {
+                        ViewTemplate::alert("L'utilisateur n'existe pas.", "danger", "Routes.php");
+                    }
+                } else {
+                    ViewTemplate::alert(" Aucune donnée n'a été transmise.", "danger", "Routes.php");
+                }
+                ViewTemplate::footer();
+                break;
+            }
+        case 'voirProfil': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewVoirProfil.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
+
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                ViewVoirProfil::VoirProfilAnnonce($_GET['id']);
+                ViewTemplate::footer();
+
+                break;
             }
     }
 } else { // Sinon, on affiche la page principale du site

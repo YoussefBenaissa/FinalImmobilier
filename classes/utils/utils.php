@@ -20,7 +20,8 @@ class Utils
             "codpost" => "//",
             "prix" => "//",
             "type" => "//",
-            "type_bien_id" => "//"
+            "type_bien_id" => "//",
+            "libelle" => "//"
 
         ];
 
@@ -108,7 +109,3 @@ class Utils
         }
     }
 }
-
-
-
-

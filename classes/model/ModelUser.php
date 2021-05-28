@@ -108,4 +108,34 @@ class ModelUser
         $requetModif->bindValue(':tel', $user->getTel());
         $requetModif->execute();
     }
+    public  static function getListUser()
+    {
+        $idcon = connexion();
+        $requete = $idcon->prepare('SELECT * FROM user');
+        $requete->execute();
+        if ($donnees = $requete->fetch(PDO::FETCH_ASSOC)) { //test si la requête renvoi des données
+            do {
+                $user[] = new User($donnees);
+            } while ($donnees = $requete->fetch(PDO::FETCH_ASSOC));
+            return $user;
+        } else {
+            return null;
+        }
+    }
+    public static function suppUser($id)
+    {
+        $idcon = connexion();
+        $requetModif = $idcon->prepare("DELETE FROM user  WHERE id = :id");
+        $requetModif->execute([
+            ':id' => $id,
+        ]);
+    }
+    public  static function VoirProfilAnnonceur($id)
+    {
+        $idcon = connexion();
+        $requete = $idcon->prepare('SELECT * FROM USER WHERE id=?');
+        $requete->execute([$id]);
+        $donnees = $requete->fetch(PDO::FETCH_ASSOC);
+        return $donnees;
+    }
 }
