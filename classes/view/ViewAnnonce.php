@@ -2,6 +2,7 @@
 require_once "../model/ModelTypeBien.php";
 require_once "../model/ModelAnnonce.php";
 require_once "../controller/Type_bien.Class.php";
+require_once "../controller/SearchAnnonce.Class.php";
 
 class ViewAnnonce
 {
@@ -71,67 +72,125 @@ class ViewAnnonce
             </form>
         </div>
 
-    <?php }
+        <?php }
+
+    public static function ListSearchAnnonce($searchAnnonce)
+    {
+        $annonces = ModelAnnonce::getListSearchAnnonce($searchAnnonce);
+        if ($annonces == null) {
+            echo "Aucune annonce trouvées";
+        } else {
+        ?>
+            <div class="container">
+                <h3 class="h3">Listes des annonces</h3>
+                <div class="row">
+
+                    <?php
+
+                    foreach ($annonces as $annonce) {
+                    ?>
+                        <div class="col-md-3 mb-3">
+                            <div class="product-grid6">
+                                <div class="product-image6">
+                                    <a href="#">
+                                        <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $annonce->getPhotos() ?>">
+                                    </a>
+                                </div>
+                                <div class="product-content">
+                                    <h3 class="title"><a href="#"><?php echo $annonce->getTitre() ?></a></h3>
+                                    <div class="price"><?php
+                                                        if ($annonce->getType() == "0") {
+                                                            $text = "Location : " . $annonce->getPrix() . " $/Mois";
+                                                        } else {
+                                                            $text = "Vente : " . $annonce->getPrix() . " $";
+                                                        }
+                                                        echo $text;
+                                                        ?>
+                                        <span></span>
+                                    </div>
+
+                                </div>
+
+                                <ul class="social">
+                                    <li><a href="<?php echo ROOTDIR . "?routing=singleAnnonce&id=" . $annonce->getId() ?>" data-tip="Quick View"><i class="fa fa-search"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    <?php
+
+                    }
+
+                    ?>
+                </div>
+
+            </div>
+        <?php
+        }
+    }
 
     public static function ListAnnonce()
     {
         $annonces = ModelAnnonce::getListAnnonce();
+        if ($annonces == null) {
+            echo "Aucune annonce trouvées";
+        } else {
 
-    ?>
-        <div class="container">
-            <h3 class="h3">Listes des annonces</h3>
-            <div class="row">
 
-                <?php
 
-                foreach ($annonces as $annonce) {
-                ?>
-                    <div class="col-md-3 mb-3">
-                        <div class="product-grid6">
-                            <div class="product-image6">
-                                <a href="#">
-                                    <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $annonce->getPhotos() ?>">
-                                </a>
-                            </div>
-                            <div class="product-content">
-                                <h3 class="title"><a href="#"><?php echo $annonce->getTitre() ?></a></h3>
-                                <div class="price"><?php
-                                                    if ($annonce->getType() == "0") {
-                                                        $text = "Location : " . $annonce->getPrix() . " $/Mois";
-                                                    } else {
-                                                        $text = "Vente : " . $annonce->getPrix() . " $";
-                                                    }
-                                                    echo $text;
-                                                    ?>
-                                    <span></span>
+        ?>
+            <div class="container">
+                <h3 class="h3">Listes des annonces</h3>
+                <div class="row">
+
+                    <?php
+
+                    foreach ($annonces as $annonce) {
+                    ?>
+                        <div class="col-md-3 mb-3">
+                            <div class="product-grid6">
+                                <div class="product-image6">
+                                    <a href="#">
+                                        <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $annonce->getPhotos() ?>">
+                                    </a>
+                                </div>
+                                <div class="product-content">
+                                    <h3 class="title"><a href="#"><?php echo $annonce->getTitre() ?></a></h3>
+                                    <div class="price"><?php
+                                                        if ($annonce->getType() == "0") {
+                                                            $text = "Location : " . $annonce->getPrix() . " $/Mois";
+                                                        } else {
+                                                            $text = "Vente : " . $annonce->getPrix() . " $";
+                                                        }
+                                                        echo $text;
+                                                        ?>
+                                        <span></span>
+                                    </div>
+
                                 </div>
 
+                                <ul class="social">
+                                    <li><a href="<?php echo ROOTDIR . "?routing=singleAnnonce&id=" . $annonce->getId() ?>" data-tip="Quick View"><i class="fa fa-search"></i></a></li>
+                                </ul>
                             </div>
-
-                            <ul class="social">
-                                <li><a href="<?php echo ROOTDIR . "?routing=singleAnnonce&id=" . $annonce->getId() ?>" data-tip="Quick View"><i class="fa fa-search"></i></a></li>
-                            </ul>
                         </div>
-                    </div>
-                <?php
+                    <?php
 
-                }
+                    }
 
-                ?>
+                    ?>
+                </div>
+
             </div>
 
-        </div>
-
-    <?php
-
-
+        <?php
+        }
     }
 
     public static function singleAnnonce($id)
     {
         $annonce = ModelAnnonce::getAnnonceById($id);
         $users = ModelAnnonce::getUserAnnonceById($id);
-    ?>
+        ?>
         <div class="container">
             <h3 class="h3"><?php echo $annonce->getTitre() ?></h3>
             <div class="row">
@@ -189,85 +248,89 @@ class ViewAnnonce
                 </div>
             </div>
         </div>
-    <?php }
+        <?php }
     public static function AnnonceUser($id)
     {
         $userAnonces = ModelAnnonce::getAnnonceUserById($id);
-    ?>
-        <div class="container cc">
-            <h3 class="h3">Liste de mes annonces</h3>
-            <div class="row">
-                <?php foreach ($userAnonces as $userannonce) {
-                ?>
-                    <div class="col-md-3 mt-2  " id="bloc_<?php echo $userannonce->getId() ?>">
-                        <div class="product-grid6">
-                            <div class="product-image6">
-                                <a href="#">
-                                    <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $userannonce->getPhotos() ?>">
-                                </a>
-                            </div>
-                            <div class="product-content">
-                                <div class="price"><?php
-                                                    if ($userannonce->getType() == "0") {
-                                                        $text = "Location : " . $userannonce->getPrix() . " $/Mois";
-                                                    } else {
-                                                        $text = "Vente : " . $userannonce->getPrix() . " $";
-                                                    }
-                                                    echo $text;
-                                                    ?>
-                                    <span></span>
+        if ($userAnonces == null) {
+            echo "Aucune annonce trouvées";
+        } else {
+        ?>
+            <div class="container cc">
+                <h3 class="h3">Liste de mes annonces</h3>
+                <div class="row">
+                    <?php foreach ($userAnonces as $userannonce) {
+                    ?>
+                        <div class="col-md-3 mt-2  " id="bloc_<?php echo $userannonce->getId() ?>">
+                            <div class="product-grid6">
+                                <div class="product-image6">
+                                    <a href="#">
+                                        <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $userannonce->getPhotos() ?>">
+                                    </a>
+                                </div>
+                                <div class="product-content">
+                                    <div class="price"><?php
+                                                        if ($userannonce->getType() == "0") {
+                                                            $text = "Location : " . $userannonce->getPrix() . " $/Mois";
+                                                        } else {
+                                                            $text = "Vente : " . $userannonce->getPrix() . " $";
+                                                        }
+                                                        echo $text;
+                                                        ?>
+                                        <span></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-7 " id="bloc_content_<?php echo $userannonce->getId() ?>">
-                        <div class="product-content">
-                            <div class="price"><?php
-                                                if ($userannonce->getType() == "0") {
-                                                    $text = "<h4>Prix : </h4>" . $userannonce->getPrix() . " $/Mois";
-                                                } else {
-                                                    $text = "<h4>Prix : </h4>" . $userannonce->getPrix() . " $";
-                                                }
-                                                echo $text;
+                        <div class="col-md-7 " id="bloc_content_<?php echo $userannonce->getId() ?>">
+                            <div class="product-content">
+                                <div class="price"><?php
+                                                    if ($userannonce->getType() == "0") {
+                                                        $text = "<h4>Prix : </h4>" . $userannonce->getPrix() . " $/Mois";
+                                                    } else {
+                                                        $text = "<h4>Prix : </h4>" . $userannonce->getPrix() . " $";
+                                                    }
+                                                    echo $text;
 
-                                                ?>
-                                <h4>Description : </h4> <?php echo $userannonce->getDescription() ?>
+                                                    ?>
+                                    <h4>Description : </h4> <?php echo $userannonce->getDescription() ?>
+                                </div>
                             </div>
+
                         </div>
+                        <div class="col-md-2 " id="bloc_delete_<?php echo $userannonce->getId() ?>">
+                            <a class="btn btn-success " href="<?php echo ROOTDIR . "?routing=modifAnnonce&id=" . $userannonce->getId() ?>"> Modifier l'annonce</a>
 
-                    </div>
-                    <div class="col-md-2 " id="bloc_delete_<?php echo $userannonce->getId() ?>">
-                        <a class="btn btn-success " href="<?php echo ROOTDIR . "?routing=modifAnnonce&id=" . $userannonce->getId() ?>"> Modifier l'annonce</a>
-
-                        <button class="btn btn-danger mt-2 supp-annonceuser" data-toggle="modal" id="<?php echo $userannonce->getId() ?>" data-target="#modalsupp">Supprimer</button>
-                    </div>
-                <?php }
-                ?>
+                            <button class="btn btn-danger mt-2 supp-annonceuser" data-toggle="modal" id="<?php echo $userannonce->getId() ?>" data-target="#modalsupp">Supprimer</button>
+                        </div>
+                    <?php }
+                    ?>
+                </div>
             </div>
-        </div>
-        <!-- modal supp -->
-        <div class="modal fade" id="modalsupp" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Supprimer l'annonce</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Etes vous sur de vouloir suprimer cette annonce ?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger annuler" data-dismiss="modal">Annuler</button>
-                        <a class="btn btn-success annonce-supp" name="Supprimer">Supprimer</a>
+            <!-- modal supp -->
+            <div class="modal fade" id="modalsupp" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Supprimer l'annonce</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Etes vous sur de vouloir suprimer cette annonce ?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger annuler" data-dismiss="modal">Annuler</button>
+                            <a class="btn btn-success annonce-supp" name="Supprimer">Supprimer</a>
 
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-    <?php }
+        <?php
+        }
+    }
 
     public static function FormModifAnnonce($id)
     {
@@ -276,7 +339,7 @@ class ViewAnnonce
 
 
 
-    ?>
+        ?>
 
         <div class=" container mt-3">
             <div class="text-center" id='erreurs'></div>
@@ -341,6 +404,95 @@ class ViewAnnonce
 
 
 
-<?php }
+    <?php }
+
+    public static function SearchAnnonce()
+    {
+        $type_bien = ModelTypeBien::getTypeBien();
+
+    ?>
+        <div class="">
+            <form class="form-a" method="post" action="<?php echo ROOTDIR . "?routing=listAnnonce&action=searchAnnonce" ?>">
+                <div class="row">
+                    <!-- <div class="col-md-12 mb-2">
+                        <div class="form-group">
+                            <label for="Type">Keyword</label>
+                            <input type="text" class="form-control form-control-lg form-control-a" placeholder="Keyword" />
+                        </div>
+                    </div> -->
+
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label for="Type">Type Bien</label>
+                            <select required id="type_bien_id" name="type_bien_id" class="form-control form-control-lg form-control-a">
+                                <option>Tout types</option>
+                                <?php foreach ($type_bien as $type) {
+                                ?>
+                                    <option value="<?php echo $type->getId() ?>"><?php echo $type->getLibelle() ?></option>
+                                <?php }
+                                ?>
+
+
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label for="ville">Ville</label>
+                            <input required type="text" class="form-control form-control-lg form-control-a" name="ville" placeholder="Ville" />
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label for="surface">Surface</label>
+                            <input required type="number" class="form-control form-control-lg form-control-a" name="surface" placeholder="Surface" />
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label for="price">Prix minimum</label>
+                            <select required name="prix_min" class="form-control form-control-lg form-control-a" id="price">
+                                <option value="50000">$50,000</option>
+                                <option value="100000">$100,000</option>
+                                <option value="150000">$150,000</option>
+                                <option value="200000">$200,000</option>
+                                <option value="1">Non défini</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label for="price">Prix maximum</label>
+                            <select required name="prix_max" class="form-control form-control-lg form-control-a" id="price">
+                                <option value="50000">$50,000</option>
+                                <option value="100000">$100,000</option>
+                                <option value="150000">$150,000</option>
+                                <option value="200000">$200,000</option>
+                                <option value="1">Max</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="form-group">
+                            <label for="price">Type d'annonce</label>
+                            <select required name="type" id="type" class="form-control form-control-lg form-control-a">
+                                <option>Selectionne ton type</option>
+                                <option value="0">Location</option>
+                                <option value="1">Achat</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-md-12 text-right">
+                        <button type="submit" class="btn btn-b">Rechercher une propriété</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+<?php
+    }
 }
-?>

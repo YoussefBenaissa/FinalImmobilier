@@ -1,0 +1,30 @@
+CREATE VIEW annonce_by_user AS
+
+SELECT  
+    user.id as user_id,
+    user.nom,
+    user.prenom,
+    user.mail,
+    user.tel,
+    user.role,
+    user.confirme,
+    user.actif,
+    annonce.id,
+    annonce.titre,
+    annonce.description,
+    annonce.surface,
+    annonce.photos,
+    annonce.adresse,
+    annonce.ville,
+    annonce.codpost,
+    annonce.prix,
+    annonce.type,
+    annonce.type_bien_id,
+    type_bien.id as id_type_bien,
+    type_bien.libelle
+    
+FROM  user, user_annonce, annonce, type_bien
+
+WHERE user.id = user_annonce.user_id 
+AND user_annonce.annonce_id = annonce.id 
+AND annonce.type_bien_id = type_bien.id ;

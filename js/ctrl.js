@@ -268,11 +268,26 @@ function listeTypeBien() {
 $(".supp-user").click(function () {
   $(".user-supp").attr(
     "href",
-    "/immobilierRoute/classes/controller/Routes.php?routing=supressionUser&id=" +
+    "/immobilierRoute/classes/controller/Routes.php?routing=manageUser&action=delete&id=" +
       $(this).attr("id")
   );
 });
-$(".user-supp").click(function (e) {
+$(".desactiv-user").click(function () {
+  $(".user-desactiv").attr(
+    "href",
+    "/immobilierRoute/classes/controller/Routes.php?routing=manageUser&action=desactiv&id=" +
+      $(this).attr("id")
+  );
+});
+$(".activ-user").click(function () {
+  $(".user-activ").attr(
+    "href",
+    "/immobilierRoute/classes/controller/Routes.php?routing=manageUser&action=activ&id=" +
+      $(this).attr("id")
+  );
+});
+
+$(".user_action").click(function (e) {
   e.preventDefault();
 
   let request = $.ajax({

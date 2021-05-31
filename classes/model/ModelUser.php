@@ -125,11 +125,31 @@ class ModelUser
     public static function suppUser($id)
     {
         $idcon = connexion();
-        $requetModif = $idcon->prepare("DELETE FROM user  WHERE id = :id");
+        $requetModif = $idcon->prepare("DELETE FROM user, user_annonce, annonce inner join user_annonce on user.id = user_annonce.user_id inner join annonce on annonce.id = user_annonce.annonce_id  WHERE id = :id");
         $requetModif->execute([
             ':id' => $id,
         ]);
     }
+
+    public static function desactivUser($id)
+    {
+        $idcon = connexion();
+        $requetModif = $idcon->prepare("UPDATE user SET actif=:actif WHERE id=:id");
+        $requetModif->bindValue(':id', $id);
+        $requetModif->bindValue(':actif', 0);
+        
+        $requetModif->execute();
+    }
+    public static function activUser($id)
+    {
+        $idcon = connexion();
+        $requetModif = $idcon->prepare("UPDATE user SET actif=:actif WHERE id=:id");
+        $requetModif->bindValue(':id', $id);
+        $requetModif->bindValue(':actif', 1);
+        
+        $requetModif->execute();
+    }
+    
     public  static function VoirProfilAnnonceur($id)
     {
         $idcon = connexion();

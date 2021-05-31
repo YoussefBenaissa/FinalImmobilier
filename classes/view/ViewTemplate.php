@@ -74,24 +74,6 @@ class ViewTemplate
                             }
                             ?>
                             <?php
-                            // condition pour  afficher le voir mon profil qd on est co
-                            if (isset($_SESSION["connect"])) { ?>
-                                <li class="nav-item">
-
-                                    <a class="nav-link" href="<?php echo ROOTDIR . "?routing=monProfil" ?>">Voir mon profil</a>
-
-                                </li>
-
-                            <?php
-
-                            } else {
-                            ?>
-
-                            <?php
-
-                            }
-                            ?>
-                            <?php
                             // condition pour  afficher la gestion admin qd on est co en admin
                             if (isset($_SESSION["admin"])) { ?>
                                 <li class="nav-item dropdown">
@@ -111,6 +93,25 @@ class ViewTemplate
 
                             }
                             ?>
+                            <?php
+                            // condition pour  afficher le voir mon profil qd on est co
+                            if (isset($_SESSION["connect"])) { ?>
+                                <li class="nav-item">
+
+                                    <a class="nav-link" href="<?php echo ROOTDIR . "?routing=monProfil" ?>">Voir mon profil</a>
+
+                                </li>
+
+                            <?php
+
+                            } else {
+                            ?>
+
+                            <?php
+
+                            }
+                            ?>
+
 
 
                             <li class="nav-item dropdown">
@@ -164,11 +165,32 @@ class ViewTemplate
                             ?>
                         </ul>
                     </div>
-                    <button type="button" class="btn btn-b-n navbar-toggle-box-collapse d-none d-md-block" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-expanded="false">
+                    <button type="button" class="btn btn-b-n navbar-toggle-box-collapse d-none d-md-block" data-toggle="modal" data-target="#searchAnnonce" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-expanded="false">
                         <span class="fa fa-search" aria-hidden="true"></span>
                     </button>
+
                 </div>
             </nav>
+            <div class="modal fade" id="searchAnnonce" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <?php ViewAnnonce::SearchAnnonce();
+                            ?>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     <?php }

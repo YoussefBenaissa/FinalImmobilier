@@ -20,6 +20,7 @@ if (isset($_GET['routing'])) {
 
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewConnexion.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 ViewTemplate::header();
                 viewTemplate::navbar();
@@ -44,6 +45,7 @@ if (isset($_GET['routing'])) {
                 require_once "../model/ModelUser.php";
                 require_once "../controller/User.Class.php";
                 require_once "../utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 if (isset($_POST['connexion'])) {
                     $donnees = [$_POST['mail'], $_POST['pass']];
@@ -58,20 +60,24 @@ if (isset($_GET['routing'])) {
                         );
                         $user_final = ModelUser::VerifConnexionUser($user);
                         if ($user_final != False) {
+                            if ($user_final->getActif() == 1) {
+                                $_SESSION["nom"] = $user_final->getNom();
+                                $_SESSION["prenom"] = $user_final->getPrenom();
+                                $_SESSION["mail"] = $user_final->getMail();
+                                $_SESSION["connect"] = True;
+                                $_SESSION["id"] =  $user_final->getId();
+                                $_SESSION["role"] =  $user_final->getRole();
+                                if ($_SESSION["role"] == 1) {
+                                    $_SESSION["role"] = "Admin";
+                                    $_SESSION["admin"] = true;
+                                }
 
-                            $_SESSION["nom"] = $user_final->getNom();
-                            $_SESSION["prenom"] = $user_final->getPrenom();
-                            $_SESSION["mail"] = $user_final->getMail();
-                            $_SESSION["connect"] = True;
-                            $_SESSION["id"] =  $user_final->getId();
-                            $_SESSION["role"] =  $user_final->getRole();
-                            if ($_SESSION["role"] == 1) {
-                                $_SESSION["role"] = "Admin";
-                                $_SESSION["admin"] = true;
+                                header("refresh:0;url=" . ROOTDIR);
+                                ViewTemplate::header();
+                            } else {
+                                ViewTemplate::header();
+                                ViewTemplate::alert("Votre compte est inactif, merci de contacter un administrateur", "danger", "Routes.php?routing=connexion");
                             }
-
-                            header("refresh:0;url=" . ROOTDIR);
-                            ViewTemplate::header();
                         } else {
                             header("refresh:0;url=" . ROOTDIR . "?routing=connexion&connect=error");
                             ViewTemplate::header();
@@ -92,6 +98,8 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewInscription.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/SearchAnnonce.Class.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 ViewTemplate::header();
                 ViewTemplate::navbar();
@@ -105,6 +113,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewInscription.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 ViewTemplate::header();
                 if (isset($_POST['ajout'])) {
@@ -148,6 +157,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewInscription.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
 
                 ViewTemplate::header();
@@ -176,14 +186,15 @@ if (isset($_GET['routing'])) {
         case 'deconnexion': {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewConnexion.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
+
+                session_destroy();
+                header("refresh:2;url=" . ROOTDIR);
                 ViewTemplate::header();
                 viewTemplate::navbar();
-                session_destroy();
                 echo '<div class="ligne">Vous êtes à présent déconnecté </div>';
-                header("refresh:2;url=" . ROOTDIR);
                 ViewTemplate::footer();
-
 
                 break;
             }
@@ -191,6 +202,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewNewMdp.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 ViewTemplate::header();
                 if (isset($_GET["connect"])) {
@@ -213,6 +225,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewNewMdp.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 ViewTemplate::header();
                 if (isset($_POST['newpass'])) {
@@ -249,6 +262,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 ViewTemplate::header();
 
@@ -298,6 +312,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 ViewTemplate::header();
 
@@ -331,6 +346,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
                 ViewTemplate::header();
 
                 if (isset($_GET["mail"])) {
@@ -379,6 +395,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
                 ViewTemplate::header();
                 ViewTemplate::navbar();
                 ViewTemplate::footer();
@@ -396,6 +413,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelAnnonce.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
 
                 ViewTemplate::header();
@@ -453,6 +471,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewVoirProfil.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 ViewTemplate::header();
                 ViewTemplate::navbar();
@@ -462,15 +481,53 @@ if (isset($_GET['routing'])) {
                 break;
             }
         case 'listAnnonce': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelTypeBien.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelAnnonce.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
-                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelAnnonce.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/SearchAnnonce.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
-                ViewTemplate::header();
-                ViewTemplate::navbar();
-                ViewAnnonce::ListAnnonce();
-                ViewTemplate::footer();
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
+                if (isset($_POST)) {
+
+                    if (isset($_GET["action"])) {
+                        if ($_GET["action"] == "searchAnnonce") {
+
+                            $searchAnnonce = new SearchAnnonce(
+                                [
+                                    'surface' => $_POST["surface"],
+                                    'ville' => $_POST["ville"],
+                                    'prix_min' => $_POST["prix_min"],
+                                    'prix_max' => $_POST["prix_max"],
+                                    'type' => $_POST["type"],
+                                    'type_bien_id' => $_POST["type_bien_id"],
+
+                                ]
+                            );
+                            ViewTemplate::header();
+                            ViewTemplate::navbar();
+                            ViewAnnonce::ListSearchAnnonce($searchAnnonce);
+                            ViewTemplate::footer();
+                        } else {
+                            ViewTemplate::header();
+                            ViewTemplate::navbar();
+                            ViewAnnonce::ListAnnonce();
+                            ViewTemplate::footer();
+                        }
+                    } else {
+                        ViewTemplate::header();
+                        ViewTemplate::navbar();
+                        ViewAnnonce::ListAnnonce();
+                        ViewTemplate::footer();
+                    }
+                } else {
+
+                    ViewTemplate::header();
+                    ViewTemplate::navbar();
+                    ViewAnnonce::ListAnnonce();
+                    ViewTemplate::footer();
+                }
 
 
                 break;
@@ -481,6 +538,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelAnnonce.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
                 ViewTemplate::header();
                 ViewTemplate::navbar();
                 ViewAnnonce::singleAnnonce($_GET["id"]);
@@ -494,6 +552,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewModifUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
                 ViewTemplate::header();
                 ViewTemplate::navbar();
                 if (isset($_GET['id'])) {
@@ -552,6 +611,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewModifUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
                 ViewTemplate::header();
                 ViewTemplate::navbar();
                 ViewModifUser::FormModification($_GET['id']);
@@ -568,6 +628,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewModifUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
                 ViewTemplate::header();
                 ViewTemplate::navbar();
                 ViewAnnonce::AnnonceUser($_SESSION['id']);
@@ -581,6 +642,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelAnnonce.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 ViewTemplate::header();
                 ViewTemplate::navbar();
@@ -613,6 +675,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewModifUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
                 ViewTemplate::header();
                 ViewTemplate::navbar();
                 ViewAnnonce::FormModifAnnonce($_GET['id']);
@@ -629,6 +692,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewModifUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
                 ViewTemplate::header();
                 ViewTemplate::navbar();
                 if (isset($_GET['id'])) {
@@ -688,6 +752,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTypeBien.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 ViewTemplate::header();
                 ViewTemplate::navbar();
@@ -700,6 +765,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTypeBien.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelTypeBien.php";
 
@@ -713,6 +779,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTypeBien.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelTypeBien.php";
 
@@ -761,7 +828,8 @@ if (isset($_GET['routing'])) {
         case 'verificationCreationTypeBien': {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelTypeBien.php";
-                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";;
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
                 ViewTemplate::header();
                 ViewTemplate::navbar();
                 if (isset($_POST['ajout'])) {
@@ -796,6 +864,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelTypeBien.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 ViewTemplate::header();
                 ViewTemplate::navbar();
@@ -818,6 +887,7 @@ if (isset($_GET['routing'])) {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
                 ViewTemplate::header();
                 ViewTemplate::navbar();
@@ -828,33 +898,71 @@ if (isset($_GET['routing'])) {
 
                 break;
             }
-        case 'supressionUser': {
+        case 'manageUser': {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewlistUser.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
+                if (isset($_GET['action'])) {
+                    if ($_GET['action'] == "delete") {
 
-                ViewTemplate::header();
-                ViewTemplate::navbar();
-                if (isset($_GET['id'])) {
-                    if (/*existance user*/ModelUser::getById($_GET['id'])) { // supression de l'utilisateur
-                        ModelUser::suppUser($_GET['id']);
-                        ViewTemplate::alert("L'utilisateur a été supprimé avec succès.", "success", "Routes.php?routing=listeUser");
-                    } else {
-                        ViewTemplate::alert("L'utilisateur n'existe pas.", "danger", "Routes.php");
+
+                        ViewTemplate::header();
+                        ViewTemplate::navbar();
+                        if (isset($_GET['id'])) {
+                            if (/*existance user*/ModelUser::getById($_GET['id'])) { // supression de l'utilisateur
+                                ModelUser::suppUser($_GET['id']);
+                                ViewTemplate::alert("L'utilisateur a été supprimé avec succès.", "success", "Routes.php?routing=listeUser");
+                            } else {
+                                ViewTemplate::alert("L'utilisateur n'existe pas.", "danger", "Routes.php");
+                            }
+                        } else {
+                            ViewTemplate::alert(" Aucune donnée n'a été transmise.", "danger", "Routes.php");
+                        }
+                        ViewTemplate::footer();
+                    } else if ($_GET['action'] == "desactiv") {
+
+                        ViewTemplate::header();
+                        ViewTemplate::navbar();
+                        if (isset($_GET['id'])) {
+                            if (/*existance user*/ModelUser::getById($_GET['id'])) { // supression de l'utilisateur
+                                ModelUser::desactivUser($_GET['id']);
+                                ViewTemplate::alert("L'utilisateur a été désactivé avec succès.", "success", "Routes.php?routing=listeUser");
+                            } else {
+                                ViewTemplate::alert("L'utilisateur n'existe pas.", "danger", "Routes.php");
+                            }
+                        } else {
+                            ViewTemplate::alert(" Aucune donnée n'a été transmise.", "danger", "Routes.php");
+                        }
+                        ViewTemplate::footer();
+                    } else if ($_GET['action'] == "activ") {
+                        ViewTemplate::header();
+                        ViewTemplate::navbar();
+                        if (isset($_GET['id'])) {
+                            if (/*existance user*/ModelUser::getById($_GET['id'])) { // supression de l'utilisateur
+                                ModelUser::activUser($_GET['id']);
+                                ViewTemplate::alert("L'utilisateur a été désactivé avec succès.", "success", "Routes.php?routing=listeUser");
+                            } else {
+                                ViewTemplate::alert("L'utilisateur n'existe pas.", "danger", "Routes.php");
+                            }
+                        } else {
+                            ViewTemplate::alert(" Aucune donnée n'a été transmise.", "danger", "Routes.php");
+                        }
+                        ViewTemplate::footer();
                     }
                 } else {
-                    ViewTemplate::alert(" Aucune donnée n'a été transmise.", "danger", "Routes.php");
+                    header("refresh:0;url=" . ROOTDIR);
                 }
-                ViewTemplate::footer();
+
                 break;
             }
         case 'voirProfil': {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewVoirProfil.php";
-                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
+
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
 
                 ViewTemplate::header();
@@ -869,6 +977,7 @@ if (isset($_GET['routing'])) {
 
     require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAcceuil.php";
     require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+    require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
     ViewTemplate::header();
     viewTemplate::navbar();

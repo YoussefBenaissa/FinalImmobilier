@@ -1,5 +1,7 @@
-<?php require_once "connexion.php";
+<?php 
+require_once "connexion.php";
 require_once "../controller/Annonce.Class.php";
+require_once "../controller/SearchAnnonce.Class.php";
 
 class ModelAnnonce
 {
@@ -64,6 +66,8 @@ class ModelAnnonce
             return new Annonce($donnees);
         }
     }
+    
+    
     public  static function getAnnonceUserById($id)
     {
 
@@ -122,6 +126,34 @@ class ModelAnnonce
             } while ($donnees = $requete->fetch(PDO::FETCH_ASSOC));
 
             return $userannonces;
+        } else {
+            return null;
+        }
+    }
+
+    public  static function getListSearchAnnonce(SearchAnnonce $search)
+    {
+        
+
+        $idcon = connexion();
+        $requete = $idcon->prepare('SELECT * FROM annonce_by_user WHERE surface >= :surface_min and surface <= :surface_max and ville LIKE :ville  and prix >= :prix_min and prix <= :prix_max and type = :type and type_bien_id=:type_bien_id');
+        $requete->bindValue(':surface_min', $search->getSurface() - 5 );
+        $requete->bindValue(':surface_max', $search->getSurface() + 5);
+        $requete->bindValue(':ville', "%".$search->getVille()."%" );
+        $requete->bindValue(':prix_min', $search->getPrix_min());
+        $requete->bindValue(':prix_max', $search->getPrix_max());
+        $requete->bindValue(':type', $search->getType());
+        $requete->bindValue(':type_bien_id', $search->getType_bien_id());
+
+        $requete->execute();
+
+
+        if ($donnees = $requete->fetch(PDO::FETCH_ASSOC)) { //test si la requête renvoi des données
+
+            do {
+                $annonces[] = new Annonce($donnees);
+            } while ($donnees = $requete->fetch(PDO::FETCH_ASSOC));
+            return $annonces;
         } else {
             return null;
         }
