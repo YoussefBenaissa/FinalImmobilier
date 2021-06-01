@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once "connexion.php";
 require_once "../controller/Annonce.Class.php";
 require_once "../controller/SearchAnnonce.Class.php";
@@ -66,8 +66,8 @@ class ModelAnnonce
             return new Annonce($donnees);
         }
     }
-    
-    
+
+
     public  static function getAnnonceUserById($id)
     {
 
@@ -133,13 +133,13 @@ class ModelAnnonce
 
     public  static function getListSearchAnnonce(SearchAnnonce $search)
     {
-        
+
 
         $idcon = connexion();
         $requete = $idcon->prepare('SELECT * FROM annonce_by_user WHERE surface >= :surface_min and surface <= :surface_max and ville LIKE :ville  and prix >= :prix_min and prix <= :prix_max and type = :type and type_bien_id=:type_bien_id');
-        $requete->bindValue(':surface_min', $search->getSurface() - 5 );
+        $requete->bindValue(':surface_min', $search->getSurface() - 5);
         $requete->bindValue(':surface_max', $search->getSurface() + 5);
-        $requete->bindValue(':ville', "%".$search->getVille()."%" );
+        $requete->bindValue(':ville', "%" . $search->getVille() . "%");
         $requete->bindValue(':prix_min', $search->getPrix_min());
         $requete->bindValue(':prix_max', $search->getPrix_max());
         $requete->bindValue(':type', $search->getType());
@@ -157,5 +157,41 @@ class ModelAnnonce
         } else {
             return null;
         }
+    }
+    public static function ajoutFavoris($userId, $idannonce)
+    {
+
+        $idcon = connexion();
+        $requete2 = $idcon->prepare(' INSERT INTO user_favoris VALUES (:user_id,:annonce_id)');
+        $requete2->execute([
+            ':user_id' => $userId,
+            ':annonce_id' => $idannonce,
+
+        ]);
+    }
+    public  static function getListFavoris()
+    {
+        $idcon = connexion();
+        $requete = $idcon->prepare('SELECT * FROM user_favoris INNER JOIN annonce ON annonce.id=user_favoris.annonce_id');
+        $requete->execute();
+
+        if ($donnees = $requete->fetch(PDO::FETCH_ASSOC)) { //test si la requête renvoi des données
+
+            do {
+                $annonces[] = new Annonce($donnees);
+            } while ($donnees = $requete->fetch(PDO::FETCH_ASSOC));
+
+            return $annonces;
+        } else {
+            return null;
+        }
+    }
+    public static function suppFavoris($id)
+    {
+        $idcon = connexion();
+        $requetModif = $idcon->prepare("DELETE user_favoris FROM user inner join user_favoris on user.id=user_favoris.user_id WHERE user_favoris.annonce_id =:id");
+        $requetModif->execute([
+            ':id' => $id,
+        ]);
     }
 }

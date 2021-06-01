@@ -1,8 +1,8 @@
 <?php
-require_once "../model/ModelTypeBien.php";
-require_once "../model/ModelAnnonce.php";
 require_once "../controller/Type_bien.Class.php";
 require_once "../controller/SearchAnnonce.Class.php";
+require_once "../model/ModelTypeBien.php";
+require_once "../model/ModelAnnonce.php";
 
 class ViewAnnonce
 {
@@ -241,10 +241,13 @@ class ViewAnnonce
 
                 </div>
                 <!-- Creation d'un button pour un Admin qui permet de supprimer une annonce frauduleuse -->
-                <div class="col-md-2 col-sm-6"><?php if (isset($_SESSION['admin'])) { ?>
+                <div class="col-md-2 col-sm-6">
+                    <a type="button" class="btn btn-danger rounded-circle mb-1" href="<?php echo ROOTDIR . "?routing=ajoutFavoris&id=" . $annonce->getId() ?>"><i class="far fa-heart"></i></a>
+                    <?php if (isset($_SESSION['admin'])) { ?>
                         <a class="btn btn-danger" href="<?php echo ROOTDIR . "?routing=suppressionAnnonceUser&id=" . $annonce->getId() ?>">Suprimer cette annonce</a>
                     <?php } else { ?>
                     <?php } ?>
+
                 </div>
             </div>
         </div>
@@ -493,6 +496,129 @@ class ViewAnnonce
                 </div>
             </form>
         </div>
-<?php
+        <?php
     }
+    public static function ListFavoris()
+    {
+        $favoris = ModelAnnonce::getListFavoris();
+        if ($favoris == null) {
+            echo "Aucune annonce trouvées";
+        } else {
+
+
+
+        ?>
+            <div class="container">
+                <h3 class="h3">Listes des Favoris</h3>
+                <div class="row">
+
+                    <?php
+
+                    foreach ($favoris as $favori) {
+                    ?>
+                        <div class="col-md-3 mb-3">
+                            <div class="product-grid6">
+                                <div class="product-image6">
+                                    <a href="#">
+                                        <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $favori->getPhotos() ?>">
+                                    </a>
+                                </div>
+                                <div class="product-content">
+                                    <h3 class="title"><a href="#"><?php echo $favori->getTitre() ?></a></h3>
+                                    <div class="price"><?php
+                                                        if ($favori->getType() == "0") {
+                                                            $text = "Location : " . $favori->getPrix() . " $/Mois";
+                                                        } else {
+                                                            $text = "Vente : " . $favori->getPrix() . " $";
+                                                        }
+                                                        echo $text;
+                                                        ?>
+                                        <span></span>
+                                    </div>
+
+                                </div>
+
+                                <ul class="social">
+                                    <li><a href="<?php echo ROOTDIR . "?routing=singleFavoris&id=" . $favori->getId() ?>" data-tip="Quick View"><i class="fa fa-search"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    <?php
+
+                    }
+
+                    ?>
+                </div>
+
+            </div>
+
+        <?php
+        }
+    }
+    public static function singleFavoris($id)
+    {
+        $annonce = ModelAnnonce::getAnnonceById($id);
+        $users = ModelAnnonce::getUserAnnonceById($id);
+        ?>
+        <div class="container">
+            <h3 class="h3"><?php echo $annonce->getTitre() ?></h3>
+            <div class="row">
+                <div class="col-md-3 col-sm-6">
+                    <div class="product-grid6">
+                        <div class="product-image6">
+                            <a href="#">
+                                <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $annonce->getPhotos() ?>">
+                            </a>
+                        </div>
+                        <div class="product-content">
+                            <div class="price"><?php
+                                                if ($annonce->getType() == "0") {
+                                                    $text = "Location : " . $annonce->getPrix() . " $/Mois";
+                                                } else {
+                                                    $text = "Vente : " . $annonce->getPrix() . " $";
+                                                }
+                                                echo $text;
+                                                ?>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7 col-sm-6">
+                    <div class="product-content">
+                        <div class="price"><?php
+                                            if ($annonce->getType() == "0") {
+                                                $text = "<h4>Prix : </h4>" . $annonce->getPrix() . " $/Mois";
+                                            } else {
+                                                $text = "<h4>Prix : </h4>" . $annonce->getPrix() . " $";
+                                            }
+                                            echo $text;
+
+                                            ?>
+                            <h4>Description : </h4> <?php echo $annonce->getDescription() ?>
+                        </div>
+                        <div>
+                            <h4>Publier par:</h4>
+
+                            <a><?php foreach ($users as $user) { ?>
+                                    <a href="<?php echo ROOTDIR . "?routing=voirProfil&id=" . $user->getId() ?>"> <?php echo $user->getNom() . " " . $user->getPrenom() ?></a>
+
+                                <?php } ?>
+
+                        </div>
+                    </div>
+
+                </div>
+                <!-- Creation d'un button pour un Admin qui permet de supprimer une annonce frauduleuse -->
+                <div class="col-md-2 col-sm-6">
+
+                    <?php if (isset($_SESSION['connect'])) { ?>
+                        <a class="btn btn-danger" href="<?php echo ROOTDIR . "?routing=suppressionFavorisUser&id=" . $annonce->getId() ?>">Suprimer des favoris </a>
+                    <?php } else { ?>
+                    <?php } ?>
+
+                </div>
+            </div>
+        </div>
+<?php }
 }

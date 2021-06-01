@@ -657,15 +657,6 @@ if (isset($_GET['routing'])) {
                     ViewTemplate::alert(" Aucune donnée n'a été transmise.", "danger", "Routes.php");
                 }
                 ViewTemplate::footer();
-
-
-
-                break;
-
-                ViewTemplate::footer();
-
-
-
                 break;
             }
         case 'modifAnnonce': {
@@ -970,6 +961,78 @@ if (isset($_GET['routing'])) {
                 ViewVoirProfil::VoirProfilAnnonce($_GET['id']);
                 ViewTemplate::footer();
 
+                break;
+            }
+        case 'ajoutFavoris': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewVoirProfil.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAcceuil.php";
+
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                echo $_SESSION["id"];
+                if ($_SESSION['connect']) {
+                    if (isset($_SESSION["id"]) && isset($_GET["id"])) {
+                        ModelAnnonce::ajoutFavoris($_SESSION["id"], $_GET["id"]);
+                        ViewTemplate::alert("l'annonce a ete ajouté aux favoris", "success", "Routes.php?routing=listAnnonce");
+                    } else {
+                        ViewTemplate::alert("aucune donnee", "danger", "Routes.php?routing=listAnnonce");
+                    }
+                } else {
+                    ViewTemplate::alert("Veuillez vous connectez pour ajouter cette annonce aux favoris", "danger", "Routes.php?routing=connexion");
+                }
+
+
+                ViewTemplate::footer();
+
+                break;
+            }
+        case 'favorisAnnonce': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewVoirProfil.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
+
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                ViewAnnonce::ListFavoris();
+                ViewTemplate::footer();
+                break;
+            }
+        case 'singleFavoris': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewVoirProfil.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
+
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                ViewAnnonce::singleFavoris($_GET["id"]);
+                ViewTemplate::footer();
+                break;
+            }
+        case 'suppressionFavorisUser': {
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelAnnonce.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
+
+                ViewTemplate::header();
+                ViewTemplate::navbar();
+                if (isset($_GET['id'])) {
+                    if (/*existance user*/ModelAnnonce::getAnnonceById($_GET['id'])) { // supression de l'utilisateur
+                        ModelAnnonce::suppFavoris($_GET['id']);
+                        ViewTemplate::alert("L'annonce a été supprimé avec succès.", "success", "Routes.php?routing=favorisAnnonce");
+                    } else {
+                        ViewTemplate::alert("L'annonce n'existe pas.", "danger", "Routes.php");
+                    }
+                } else {
+                    ViewTemplate::alert(" Aucune donnée n'a été transmise.", "danger", "Routes.php");
+                }
+                ViewTemplate::footer();
                 break;
             }
     }

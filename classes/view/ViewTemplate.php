@@ -17,7 +17,7 @@ class ViewTemplate
             <link rel="stylesheet" href='/immobilierRoute/css/all.min.css'>
             <link rel="stylesheet" href='/immobilierRoute/css/styles.css'>
 
-            <title>Inscriptions</title>
+            <title>YoussefAgency</title>
         </head>
 
         <body>
@@ -140,9 +140,9 @@ class ViewTemplate
 
                                 </div>
                             </li>
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <a class="nav-link" href="contact.html">Contact</a>
-                            </li>
+                            </li> -->
                             <?php
                             // condition pour ne plus afficher le connexion qd on est co
                             if (isset($_SESSION["connect"])) { ?>
