@@ -175,7 +175,7 @@ class ViewTemplate
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Trouve ton bonheur !!</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -206,6 +206,11 @@ class ViewTemplate
             <?php }
             ?>
         </div>
-<?php
+    <?php
     }
+    public static function deconnexion()
+    {
+    ?>
+        <div class="container text-center alert alert-success mt-2">Vous êtes à présent déconnecté </div>
+<?php }
 }

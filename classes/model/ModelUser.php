@@ -1,5 +1,5 @@
 <?php
-require_once "connexion.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/connexion.php";
 
 class ModelUser
 {
@@ -137,7 +137,7 @@ class ModelUser
         $requetModif = $idcon->prepare("UPDATE user SET actif=:actif WHERE id=:id");
         $requetModif->bindValue(':id', $id);
         $requetModif->bindValue(':actif', 0);
-        
+
         $requetModif->execute();
     }
     public static function activUser($id)
@@ -146,10 +146,10 @@ class ModelUser
         $requetModif = $idcon->prepare("UPDATE user SET actif=:actif WHERE id=:id");
         $requetModif->bindValue(':id', $id);
         $requetModif->bindValue(':actif', 1);
-        
+
         $requetModif->execute();
     }
-    
+
     public  static function VoirProfilAnnonceur($id)
     {
         $idcon = connexion();

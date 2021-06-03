@@ -41,11 +41,10 @@ if (isset($_GET['routing'])) {
                 break;
             }
         case 'verificationConnexion': {
-                require_once "../view/ViewTemplate.php";
-                require_once "../model/ModelUser.php";
-                require_once "../controller/User.Class.php";
-                require_once "../utils/utils.php";
-                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelUser.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/User.Class.php";
+                require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/utils/utils.php";
 
                 if (isset($_POST['connexion'])) {
                     $donnees = [$_POST['mail'], $_POST['pass']];
@@ -193,7 +192,7 @@ if (isset($_GET['routing'])) {
                 header("refresh:2;url=" . ROOTDIR);
                 ViewTemplate::header();
                 viewTemplate::navbar();
-                echo '<div class="ligne">Vous êtes à présent déconnecté </div>';
+                viewTemplate::deconnexion();
                 ViewTemplate::footer();
 
                 break;
@@ -781,7 +780,7 @@ if (isset($_GET['routing'])) {
 
                         ViewTypeBien::FormModifTypeBien($_GET['id']);
                     } else {
-                        ViewTemplate::alert("Le type de bien n'existe pas.", "danger", "Routes.php");
+                        ViewTemplate::alert("Le type de bien n'existe pas.", "danger", "Routes.php?routing=creationTypeBien");
                     }
                 } else {
                     if (isset($_POST['modiftypebien'])) {
@@ -800,7 +799,7 @@ if (isset($_GET['routing'])) {
                                 );
 
                                 ModelTypeBien::ModifTypeBien($type_bien);
-                                ViewTemplate::alert("La modification a été faite avec succès.", "success", htmlspecialchars($_SERVER['PHP_SELF']));
+                                ViewTemplate::alert("La modification a été faite avec succès.", "success", "Routes.php?routing=creationTypeBien");
                             } else {
                                 ViewTypeBien::FormModifTypeBien($data[0]);
                             }
@@ -1043,7 +1042,7 @@ if (isset($_GET['routing'])) {
     require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewAnnonce.php";
 
     ViewTemplate::header();
-    viewTemplate::navbar();
+    ViewTemplate::navbar();
     ViewAcceuil::AccueilBody();
     ViewTemplate::footer();
 }

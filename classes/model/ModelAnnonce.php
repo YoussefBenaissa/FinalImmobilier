@@ -1,7 +1,8 @@
 <?php
-require_once "connexion.php";
-require_once "../controller/Annonce.Class.php";
-require_once "../controller/SearchAnnonce.Class.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/connexion.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/Annonce.Class.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/SearchAnnonce.Class.php";
+
 
 class ModelAnnonce
 {

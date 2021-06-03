@@ -1,8 +1,10 @@
 <?php
-require_once "../controller/Type_bien.Class.php";
-require_once "../controller/SearchAnnonce.Class.php";
-require_once "../model/ModelTypeBien.php";
-require_once "../model/ModelAnnonce.php";
+
+require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/Type_bien.Class.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/SearchAnnonce.Class.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelTypeBien.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/ModelAnnonce.php";
+
 
 class ViewAnnonce
 {
@@ -242,7 +244,12 @@ class ViewAnnonce
                 </div>
                 <!-- Creation d'un button pour un Admin qui permet de supprimer une annonce frauduleuse -->
                 <div class="col-md-2 col-sm-6">
-                    <a type="button" class="btn btn-danger rounded-circle mb-1" href="<?php echo ROOTDIR . "?routing=ajoutFavoris&id=" . $annonce->getId() ?>"><i class="far fa-heart"></i></a>
+                    <?php if (isset($_SESSION['connect'])) { ?>
+                        <a type="button" class="btn btn-danger rounded-circle mb-3" href="<?php echo ROOTDIR . "?routing=ajoutFavoris&id=" . $annonce->getId() ?>"><i class="far fa-heart"></i></a>
+
+                    <?php  } else {
+                    } ?>
+
                     <?php if (isset($_SESSION['admin'])) { ?>
                         <a class="btn btn-danger" href="<?php echo ROOTDIR . "?routing=suppressionAnnonceUser&id=" . $annonce->getId() ?>">Suprimer cette annonce</a>
                     <?php } else { ?>

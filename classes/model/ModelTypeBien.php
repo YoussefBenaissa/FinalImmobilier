@@ -1,6 +1,6 @@
 <?php
-require_once "connexion.php";
-require_once "../controller/Type_Bien.Class.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/controller/Type_Bien.Class.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/model/connexion.php";
 
 class ModelTypeBien
 {
