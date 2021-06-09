@@ -89,10 +89,6 @@ class Utils
         }
         $file_name = substr(md5($file_name), 10) . ".$file_ext";
 
-
-
-
-
         while (file_exists("../../uploads/$file_name")) {
             $file_name = substr(md5($file_name), 10) . ".$file_ext";
         }
@@ -108,4 +104,70 @@ class Utils
             return ["uploadOk" => false, "file_name" => "", "errors" => "Aucun fichier n'est uploadé.<br>$errors"];
         }
     }
+
+    public static function analysePhoto($extenssion, $fichier)
+    {
+
+
+        $file_name = $fichier['name'];
+        $file_size = $fichier['size'];
+        $file_tmp = $fichier['tmp_name'];
+        $fileExplode = explode('.', $fichier['name']);
+        $file_ext = strtolower(end($fileExplode));
+        $uploadOk = false;
+        $errors = "";
+        $pattern = "/^[\w\s\-\.]{4,}$/";
+
+        if (!preg_match($pattern, $file_name)) {
+            $errors .= "Nom de fichier non valide. <br/>"; //on utilise .= pour la concatenation (pas de = seulement, car cela ecrase l'ancienne valeur)
+        }
+        if (!in_array(strtolower($file_ext), $extenssion)) {
+            $errors .= "extension non autorisée. <br/>";
+        }
+        if ($file_size > 3000000) {
+            $errors .= "taille du fichier ne doit pas dépasser 3 Mo. <br/>";
+        }
+        if ($errors === "") {
+            
+            return True ;
+
+        } else {
+            return ["uploadOk" => false, "file_name" => "", "errors" => "Aucun fichier n'est uploadé.<br>$errors"];
+        }
+    }
+
+    public static function uploadPhoto($fichier)
+    {
+
+        $file_name = $fichier['name'];
+        $file_size = $fichier['size'];
+        $file_tmp = $fichier['tmp_name'];
+        $fileExplode = explode('.', $fichier['name']);
+        $file_ext = strtolower(end($fileExplode));
+        $uploadOk = false;
+        $pattern = "/^[\w\s\-\.]{4,}$/";
+
+        $file_name = substr(md5($file_name), 10) . ".$file_ext";
+
+        while (file_exists("../../uploads/$file_name")) {
+            $file_name = substr(md5($file_name), 10) . ".$file_ext";
+        }
+        if (move_uploaded_file($file_tmp, "../../uploads/" . $file_name)) {
+            $uploadOk = true;
+            return [
+                "uploadOk" => $uploadOk, 
+                "file_name" => $file_name, 
+                "errors" => ""
+            ];
+        } else {
+            $errors = "Echec de l'upload. <br/>";
+            return [
+                "uploadOk" => $uploadOk, 
+                "file_name" => $file_name, 
+                "errors" => $errors
+            ];
+        }
+    
+    }
+    
 }

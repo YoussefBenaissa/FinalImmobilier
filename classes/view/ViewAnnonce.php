@@ -45,7 +45,7 @@ class ViewAnnonce
                 </div>
                 <div class="form-group">
                     <label for="exampleFormControlFile1">Ajoutez une photo</label>
-                    <input type="file" required class="form-control-file" id="photo" name="photo">
+                    <input type="file" multiple="multiple" required class="form-control-file" id="photo" name="photo[]">
                 </div>
 
                 <div class="form-group">
@@ -95,7 +95,7 @@ class ViewAnnonce
                             <div class="product-grid6">
                                 <div class="product-image6">
                                     <a href="#">
-                                        <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $annonce->getPhotos() ?>">
+                                        <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo json_decode($annonce->getPhotos())[0] ?>">
                                     </a>
                                 </div>
                                 <div class="product-content">
@@ -152,7 +152,7 @@ class ViewAnnonce
                             <div class="product-grid6">
                                 <div class="product-image6">
                                     <a href="#">
-                                        <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $annonce->getPhotos() ?>">
+                                        <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo json_decode($annonce->getPhotos())[0] ?>">
                                     </a>
                                 </div>
                                 <div class="product-content">
@@ -200,7 +200,7 @@ class ViewAnnonce
                     <div class="product-grid6">
                         <div class="product-image6">
                             <a href="#">
-                                <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $annonce->getPhotos() ?>">
+                                <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo json_decode($annonce->getPhotos())[0] ?>">
                             </a>
                         </div>
                         <div class="product-content">
@@ -242,6 +242,16 @@ class ViewAnnonce
                     </div>
 
                 </div>
+                <div>
+                    <?php
+                    $arrayPhoto = json_decode($annonce->getPhotos()) ;
+                    foreach ($arrayPhoto as $key => $photo) { 
+                        ?>
+                        <img class="pic-1" id=<?php echo $key  ?> src="http://phpweb/immobilierRoute/uploads/<?php echo $photo ?>">
+                        <?php
+                    }
+                    ?>
+                </div>
                 <!-- Creation d'un button pour un Admin qui permet de supprimer une annonce frauduleuse -->
                 <div class="col-md-2 col-sm-6">
                     <?php if (isset($_SESSION['connect'])) { ?>
@@ -270,12 +280,13 @@ class ViewAnnonce
                 <h3 class="h3">Liste de mes annonces</h3>
                 <div class="row">
                     <?php foreach ($userAnonces as $userannonce) {
+
                     ?>
                         <div class="col-md-3 mt-2  " id="bloc_<?php echo $userannonce->getId() ?>">
                             <div class="product-grid6">
                                 <div class="product-image6">
                                     <a href="#">
-                                        <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $userannonce->getPhotos() ?>">
+                                        <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo json_decode($userannonce->getPhotos())[0] ?>">
                                     </a>
                                 </div>
                                 <div class="product-content">
@@ -527,7 +538,7 @@ class ViewAnnonce
                             <div class="product-grid6">
                                 <div class="product-image6">
                                     <a href="#">
-                                        <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $favori->getPhotos() ?>">
+                                        <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo json_decode($favori->getPhotos())[0] ?>">
                                     </a>
                                 </div>
                                 <div class="product-content">
@@ -574,7 +585,7 @@ class ViewAnnonce
                     <div class="product-grid6">
                         <div class="product-image6">
                             <a href="#">
-                                <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo $annonce->getPhotos() ?>">
+                                <img class="pic-1" src="http://phpweb/immobilierRoute/uploads/<?php echo json_decode($annonce->getPhotos())[0] ?>">
                             </a>
                         </div>
                         <div class="product-content">

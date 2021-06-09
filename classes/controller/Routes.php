@@ -427,17 +427,42 @@ if (isset($_GET['routing'])) {
                     $data = Utils::valider($donnees, $types);
 
                     if ($data) {
-                        $extensions = ["jpg", "jpeg", "png", "gif"];
-                        $upload = Utils::upload($extensions, $_FILES['photo']);
-                        if ($upload['uploadOk']) {
-                            $file_name = $upload['file_name'];
 
+                        $extensions = ["jpg", "jpeg", "png", "gif"];
+                        for ($i = 0; $i < count($_FILES['photo']["name"]); $i++) {
+                            $error = 0;
+                            $array = [];
+                            $array['name'] = $_FILES['photo']['name'][$i];
+                            $array['type'] = $_FILES['photo']['type'][$i];
+                            $array['tmp_name'] = $_FILES['photo']['tmp_name'][$i];
+                            $array['size'] = $_FILES['photo']['size'][$i];
+                            $returnPhoto = Utils::analysePhoto($extensions, $array);
+                            if ($returnPhoto != True) {
+
+                                $error += 1;
+                            }
+                        }
+                        if ($error == 0) {
+                            $arrayName =  [];
+
+                            for ($i = 0; $i < count($_FILES['photo']["name"]); $i++) {
+                                $error = 0;
+                                $array = [];
+                                $array['name'] = $_FILES['photo']['name'][$i];
+                                $array['type'] = $_FILES['photo']['type'][$i];
+                                $array['tmp_name'] = $_FILES['photo']['tmp_name'][$i];
+                                $array['size'] = $_FILES['photo']['size'][$i];
+                                $uploadsPhoto = Utils::uploadPhoto($array);
+                                $arrayName[] = $uploadsPhoto['file_name']  ;
+                            }
+                            var_dump($arrayName);
+                            $arrayJson = json_encode($arrayName);
                             $Annonce = new Annonce(
                                 [
                                     'titre' => $data[0],
                                     'description' => $data[1],
                                     'surface' => $data[2],
-                                    'photos' => $file_name,
+                                    'photos' => $arrayJson,
                                     'adresse' => $data[3],
                                     'ville' => $data[4],
                                     'codpost' => $data[5],
@@ -447,22 +472,25 @@ if (isset($_GET['routing'])) {
                                 ]
                             );
                             ModelAnnonce::AjoutAnnonce($_SESSION["id"], $Annonce);
-                            header("refresh:3;url=Routes.php");
+                            //header("refresh:3;url=Routes.php");
                             viewTemplate::navbar();
                             ViewTemplate::alert("Les données sont insérées avec succès", "success", null);
                         } else {
-                            ViewTemplate::alert($upload['errors'], "danger", htmlspecialchars($_SERVER['PHP_SELF']));
+                            ViewTemplate::alert("Merci d'ajouter des photos reespectant les extensions suivantes : gif, png, jpg, jpeg", "danger", htmlspecialchars($_SERVER['PHP_SELF']));
                         }
                     } else {
                         header("refresh:0;url=Routes.php?routing=creationAnnonce&file=erreur");
                     }
+                    ViewTemplate::footer();
                 } else {
+
                     header("refresh:0;url=Routes.php");
                 }
-                ViewTemplate::footer();
-
                 break;
             }
+
+
+
 
         case 'monProfil': {
                 require_once $_SERVER["DOCUMENT_ROOT"] . "/immobilierRoute/classes/view/ViewTemplate.php";
